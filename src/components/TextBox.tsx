@@ -4,10 +4,22 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Box from '@mui/material/Box';
+
 import * as ClientTextBox from "../client/textbox";
 import { makeStyles, useTheme, styled } from '@material-ui/core/styles';
+import { WordsInChars } from '../interfaces/WordsInChars';
 
-const TextBox = () => {
+
+interface Props {
+  setWordsArr: (words: WordsInChars[]) => void;
+}
+
+interface EnglishWords {
+  id: number;
+  word: string;
+};
+
+const TextBox : React.FC<Props>  = ({setWordsArr}) => {
 
   const theme = useTheme();
 
@@ -29,23 +41,13 @@ const TextBox = () => {
   const [allWordsInChars, setAllWordsInChars] = useState<Array<WordsInChars>>([]);
 
 
-  interface EnglishWords {
-    id: number;
-    word: string;
-  };
-
-  interface WordsInChars {
-    id: number;
-    chars: Array<string>;
-  };
-
   useEffect(() => {
     getEnglishWords();
   }, [])
 
   useEffect(() => {
     splitWordsToChars(allEnglishWords);
-
+    wordsArr(allWordsInChars);
   }, [allEnglishWords])
 
   const getEnglishWords = () => {
@@ -64,6 +66,9 @@ const TextBox = () => {
       });
   };
 
+  const wordsArr = (allWordsInChars: Array<WordsInChars>) => {
+    setWordsArr(allWordsInChars);
+  }
 
   const splitWordsToChars = (allEnglishWords: Array<EnglishWords>) => {
 
@@ -75,7 +80,6 @@ const TextBox = () => {
       word.word.split(" ").forEach((word) => {
         setWordId(wordId + 1);
         wholeWord.push({ wordId: wordId, word: word })
-
       });
 
       wholeWord.forEach((wholeword) => {
@@ -109,7 +113,7 @@ const TextBox = () => {
       ) : (
         <div>
           {allWordsInChars.map((item) => (
-            <span>{item.chars}</span>
+            <span>{item.chars} </span>
           ))}
         </div>
       )

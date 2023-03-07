@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import './App.css';
 import TextBox from './components/TextBox';
 import TextField from './components/TextFieldLogic';
@@ -8,6 +8,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { grey, cyan } from '@material-ui/core/colors';
 import { makeStyles, ThemeProvider, createTheme } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
+import { WordsInChars } from './interfaces/WordsInChars';
 
 const theme = createTheme({
   palette: {
@@ -29,6 +30,8 @@ const theme = createTheme({
 
 
 const App: FC = () => {
+  const [wordsArr, setWordsArr] = useState<Array<WordsInChars>>([])
+  console.log(wordsArr);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -36,8 +39,8 @@ const App: FC = () => {
         direction="column"
         alignItems="center"
         justifyContent="center" className="App">
-        <TextBox/>
-        <TextField/>
+        <TextBox setWordsArr={setWordsArr}/>
+        <TextField wordsArr={wordsArr}/>
       </Grid>
     </ThemeProvider>
   );
