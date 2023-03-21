@@ -8,10 +8,11 @@ import Box from '@mui/material/Box';
 import * as ClientTextBox from "../client/textbox";
 import { makeStyles, useTheme, styled } from '@material-ui/core/styles';
 import { WordsInChars } from '../interfaces/WordsInChars';
+import { CharObject } from '../interfaces/CharObject';
 
 
 interface Props {
-  setWordsArr: (words: WordsInChars[]) => void;
+  InputWords: WordsInChars[];
 }
 
 interface EnglishWords {
@@ -19,7 +20,7 @@ interface EnglishWords {
   word: string;
 };
 
-const TextBox : React.FC<Props>  = ({setWordsArr}) => {
+const TextBox: React.FC<Props> = ({ InputWords }) => {
 
   const theme = useTheme();
 
@@ -39,15 +40,27 @@ const TextBox : React.FC<Props>  = ({setWordsArr}) => {
   const [toSkip, setToSkip] = useState<number>(0);
   const [toTake, setToTake] = useState<number>(100);
   const [allWordsInChars, setAllWordsInChars] = useState<Array<WordsInChars>>([]);
+  const [inputWordsInChars, setInputWordsInChars] = useState<Array<WordsInChars>>([]);
+  const [allChars, setAllChars] = useState<Array<CharObject>>([]);
+  const [isCorrect, setIsCorrect] = useState<boolean>(true);
 
+
+  useEffect(() => {
+    setInputWordsInChars(InputWords);
+
+  }, [InputWords])
 
   useEffect(() => {
     getEnglishWords();
+
   }, [])
 
   useEffect(() => {
+    assertInputText();
+  }, [inputWordsInChars])
+
+  useEffect(() => {
     splitWordsToChars(allEnglishWords);
-    wordsArr(allWordsInChars);
   }, [allEnglishWords])
 
   const getEnglishWords = () => {
@@ -59,23 +72,20 @@ const TextBox : React.FC<Props>  = ({setWordsArr}) => {
           word: item.words
         }));
         setAllEnglishWords(englishWords);
-
       })
       .finally(() => {
         setIsFetchingData(false);
       });
   };
 
-  const wordsArr = (allWordsInChars: Array<WordsInChars>) => {
-    setWordsArr(allWordsInChars);
-  }
-
   const splitWordsToChars = (allEnglishWords: Array<EnglishWords>) => {
 
     allEnglishWords.forEach((word) => {
-      let tempCharGroupedWord: Array<string> = [];
+      let tempCharGroupedWord: Array<CharObject> = [];
       let charGroupedWord: Array<WordsInChars> = [];
       let wholeWord: Array<{ wordId: number, word: string }> = [];
+      let charObject: Array<CharObject> = [];
+
 
       word.word.split(" ").forEach((word) => {
         setWordId(wordId + 1);
@@ -85,42 +95,60 @@ const TextBox : React.FC<Props>  = ({setWordsArr}) => {
       wholeWord.forEach((wholeword) => {
         wholeword.word.split("").forEach((char) => {
           setCharId(charId + 1);
-          tempCharGroupedWord.push(char);
+          tempCharGroupedWord.push({ char: char });
         });
-        charGroupedWord.push({ id: wholeword.wordId, chars: tempCharGroupedWord });
+        setAllChars(tempCharGroupedWord);
+        charGroupedWord.push({ chars: tempCharGroupedWord });
         tempCharGroupedWord = [];
       });
 
-
-
-
       setAllWordsInChars((prevAllWordsInChars) => [...prevAllWordsInChars, ...charGroupedWord]);
-
-
-      console.log(allWordsInChars);
-
     });
 
     return allWordsInChars;
   }
 
+  const assertInputText = () => {
+    for (let i = 0; i < inputWordsInChars.length; i++) {
+      let inputword = inputWordsInChars[i];
+      let textboxchars = allWordsInChars[i];
+
+      for (let j = 0; j < inputword.chars.length; j++) {
+        if (inputword.chars[j].char === textboxchars.chars[j].char) {
+          setIsCorrect(true);
+          textboxchars.isCorrect = isCorrect;
+          //create copy to set state
+          let textboxcharsCopy = [...allWordsInChars]
+          textboxcharsCopy[i].chars[j].color = "white";
+          setAllWordsInChars(textboxcharsCopy);
+        } else {
+          setIsCorrect(false);
+          textboxchars.isCorrect = isCorrect;
+          let textboxcharsCopy = [...allWordsInChars]
+          textboxcharsCopy[i].chars[j].color = "red";
+          setAllWordsInChars(textboxcharsCopy);
+        }
+      }
+    }
+  }
 
   const isLoaded = () => {
     return (
       isFetchingData ? (
         <h3>Loading ...</h3>
-
       ) : (
         <div>
-          {allWordsInChars.map((item) => (
-            <span>{item.chars} </span>
+          {allWordsInChars.map((item, index) => (
+            <div className='word'>
+              {item.chars.map((char, charIndex) => (
+                <span key={charIndex} style={{ color: char.color }}>{char.char}</span>
+              ))}
+            </div>
           ))}
         </div>
       )
     );
   }
-
-
 
   return (
     <>

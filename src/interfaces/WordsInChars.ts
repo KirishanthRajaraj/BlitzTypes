@@ -1,4 +1,7 @@
+import { CharObject } from "./CharObject";
+
 export interface WordsInChars {
-    id: number;
-    chars: Array<string>;
+    chars: Array<CharObject>;
+    isCorrect?: boolean;
+    color?: string;
 }

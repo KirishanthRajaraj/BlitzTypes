@@ -9,6 +9,7 @@ import { grey, cyan } from '@material-ui/core/colors';
 import { makeStyles, ThemeProvider, createTheme } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { WordsInChars } from './interfaces/WordsInChars';
+import { CharObject } from './interfaces/CharObject';
 
 const theme = createTheme({
   palette: {
@@ -30,8 +31,7 @@ const theme = createTheme({
 
 
 const App: FC = () => {
-  const [wordsArr, setWordsArr] = useState<Array<WordsInChars>>([])
-  console.log(wordsArr);
+  const [inputWordsArr, setInputWordsArr] = useState<Array<WordsInChars>>([])
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -39,8 +39,8 @@ const App: FC = () => {
         direction="column"
         alignItems="center"
         justifyContent="center" className="App">
-        <TextBox setWordsArr={setWordsArr}/>
-        <TextField wordsArr={wordsArr}/>
+        <TextBox InputWords={inputWordsArr}/>
+        <TextField InputArr={setInputWordsArr}/>
       </Grid>
     </ThemeProvider>
   );
