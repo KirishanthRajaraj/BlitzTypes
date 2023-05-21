@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import './App.css';
 import TextBox from './components/TextBox';
-import TextField from './components/TextFieldLogic';
+import TextField from './components/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import CssBaseline from "@material-ui/core/CssBaseline";

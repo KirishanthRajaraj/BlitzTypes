@@ -109,6 +109,7 @@ const TextBox: React.FC<Props> = ({ InputWords }) => {
   }
 
   const assertInputText = () => {
+    
     for (let i = 0; i < inputWordsInChars.length; i++) {
       let inputword = inputWordsInChars[i];
       let textboxchars = allWordsInChars[i];
