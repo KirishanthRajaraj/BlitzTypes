@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes blink {
+    0%, 50% {
+        box-shadow: inset -2px 0 0 cyan;
+    }
+    25%, 75% {
+        box-shadow: inset -2px 0 0 transparent;
+    }
+}
+
+span.currentChar {
+    animation: blink 1.5s step-start infinite;
+}

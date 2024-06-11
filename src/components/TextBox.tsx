@@ -9,10 +9,12 @@ import * as ClientTextBox from "../client/textbox";
 import { makeStyles, useTheme, styled } from '@material-ui/core/styles';
 import { WordsInChars } from '../interfaces/WordsInChars';
 import { CharObject } from '../interfaces/CharObject';
+import { text } from 'node:stream/consumers';
 
 
 interface Props {
   InputWords: WordsInChars[];
+  textFieldRef: React.RefObject<HTMLInputElement>;
 }
 
 interface EnglishWords {
@@ -20,7 +22,7 @@ interface EnglishWords {
   word: string;
 };
 
-const TextBox: React.FC<Props> = ({ InputWords }) => {
+const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
 
   const theme = useTheme();
 
@@ -47,12 +49,10 @@ const TextBox: React.FC<Props> = ({ InputWords }) => {
 
   useEffect(() => {
     setInputWordsInChars(InputWords);
-
   }, [InputWords])
 
   useEffect(() => {
     getEnglishWords();
-
   }, [])
 
   useEffect(() => {
@@ -61,10 +61,12 @@ const TextBox: React.FC<Props> = ({ InputWords }) => {
 
   useEffect(() => {
     splitWordsToChars(allEnglishWords);
+
   }, [allEnglishWords])
 
   const getEnglishWords = () => {
     setIsFetchingData(true);
+    console.log("fetching data")
     ClientTextBox.getEnglishWords(toSkip, toTake)
       .then((response) => {
         const englishWords: Array<EnglishWords> = response.data.map((item: any) => ({
@@ -95,7 +97,7 @@ const TextBox: React.FC<Props> = ({ InputWords }) => {
       wholeWord.forEach((wholeword) => {
         wholeword.word.split("").forEach((char) => {
           setCharId(charId + 1);
-          tempCharGroupedWord.push({ char: char });
+          tempCharGroupedWord.push({ char: char, opacity: 0.6, isCorrect: false });
         });
         setAllChars(tempCharGroupedWord);
         charGroupedWord.push({ chars: tempCharGroupedWord });
@@ -113,24 +115,72 @@ const TextBox: React.FC<Props> = ({ InputWords }) => {
       let inputword = inputWordsInChars[i];
       let textboxchars = allWordsInChars[i];
 
-      for (let j = 0; j < inputword.chars.length; j++) {
-        if (inputword.chars[j].char === textboxchars.chars[j].char) {
-          setIsCorrect(true);
-          textboxchars.isCorrect = isCorrect;
-          //create copy to set state
+      if ( typeof textboxchars !== 'undefined' ) {
+
+        if (inputword.chars.length == 0 || inputword !== undefined) {
           let textboxcharsCopy = [...allWordsInChars]
-          textboxcharsCopy[i].chars[j].color = "white";
-          setAllWordsInChars(textboxcharsCopy);
-        } else {
-          setIsCorrect(false);
-          textboxchars.isCorrect = isCorrect;
-          let textboxcharsCopy = [...allWordsInChars]
-          textboxcharsCopy[i].chars[j].color = "red";
+
+          for (let z = 0; z < textboxchars.chars.length; z++) {
+            textboxcharsCopy[i].chars[z].opacity = 0.6;
+          }
+
           setAllWordsInChars(textboxcharsCopy);
         }
       }
+
+      for (let j = 0; j < inputword.chars.length; j++) {
+        console.log("input " + inputword.chars.length)
+        console.log("j " + j)
+        if ( typeof textboxchars !== 'undefined' ) {
+        // reset inactive chars
+        for (let k = 0; k < textboxchars.chars.length - inputword.chars.length; k++) {
+
+
+          textboxchars.chars[inputword.chars.length + k].opacity = 0.6;
+          textboxchars.chars[inputword.chars.length + k].color = "white";
+        }
+      }
+
+        if (typeof textboxchars.chars[j] !== 'undefined') {
+          if (inputword.chars[j].char === textboxchars.chars[j].char) {
+            setIsCorrect(true);
+            textboxchars.isCorrect = isCorrect;
+            textboxchars.chars[j].isCorrect = true;
+            //create copy to set state
+            let textboxcharsCopy = [...allWordsInChars]
+            // make text full white when it's correct
+            textboxcharsCopy[i].chars[j].color = "white";
+            textboxcharsCopy[i].chars[j].opacity = 100;
+            // reset all char isCurrent properties to false
+            textboxcharsCopy.forEach(textbox => {textbox.chars.forEach(char => {char.isCurrent = false;});});
+            textboxcharsCopy[i].chars[j].isCurrent = true;
+
+            setAllWordsInChars(textboxcharsCopy);
+          } else {
+
+            setIsCorrect(false);
+            textboxchars.isCorrect = isCorrect;
+            textboxchars.chars[j].isCorrect = false;
+            // make text red when it's incorrect
+            let textboxcharsCopy = [...allWordsInChars]
+            textboxcharsCopy[i].chars[j].color = "red";
+            textboxcharsCopy[i].chars[j].opacity = 100;
+            textboxcharsCopy.forEach(textbox => {textbox.chars.forEach(char => {char.isCurrent = false;});});
+            textboxcharsCopy[i].chars[j].isCurrent = true;
+
+            setAllWordsInChars(textboxcharsCopy);
+          }
+        }
+
+      }
     }
   }
+
+  const handleInputFieldRef = () => {
+    if (textFieldRef.current) {
+      textFieldRef.current.focus();
+    }
+  };
 
   const isLoaded = () => {
     return (
@@ -139,11 +189,11 @@ const TextBox: React.FC<Props> = ({ InputWords }) => {
       ) : (
         <div>
           {allWordsInChars.map((item, index) => (
-            <div className='word'>
+            <span className='word'>
               {item.chars.map((char, charIndex) => (
-                <span key={charIndex} style={{ color: char.color }}>{char.char}</span>
-              ))}
-            </div>
+                <span className={`char ${char.isCurrent ? 'currentChar' : ''}`}  key={charIndex} style={{ color: char.color, opacity: char.opacity }}>{char.char}</span>
+              ))} <span> </span>
+            </span>
           ))}
         </div>
       )
@@ -153,16 +203,17 @@ const TextBox: React.FC<Props> = ({ InputWords }) => {
   return (
     <>
       <Grid item sm={6}>
-        <Button variant='contained' color="primary">test</Button>
-
         <Box sx={{
           color: 'white',
           height: '300px',
+          width: '700px',
+
           overflow: 'hidden',
           border: '5px solid white',
           padding: '20px',
           borderRadius: '20px'
-        }} >
+        }}
+          onClick={handleInputFieldRef}>
           <Typography variant='h4' component="span">
             {isLoaded()}
           </Typography>

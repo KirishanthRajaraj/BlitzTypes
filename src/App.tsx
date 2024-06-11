@@ -10,6 +10,8 @@ import { makeStyles, ThemeProvider, createTheme } from '@material-ui/core/styles
 import { Typography } from '@material-ui/core';
 import { WordsInChars } from './interfaces/WordsInChars';
 import { CharObject } from './interfaces/CharObject';
+import { useRef } from 'react';
+
 
 const theme = createTheme({
   palette: {
@@ -29,9 +31,11 @@ const theme = createTheme({
   }
 });
 
-
 const App: FC = () => {
   const [inputWordsArr, setInputWordsArr] = useState<Array<WordsInChars>>([])
+  const textFieldReference = useRef<HTMLInputElement>(null);
+
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -39,8 +43,8 @@ const App: FC = () => {
         direction="column"
         alignItems="center"
         justifyContent="center" className="App">
-        <TextBox InputWords={inputWordsArr}/>
-        <TextField InputArr={setInputWordsArr}/>
+        <TextBox InputWords={inputWordsArr} textFieldRef={textFieldReference}/>
+        <TextField InputArr={setInputWordsArr} textFieldRef={textFieldReference}/>
       </Grid>
     </ThemeProvider>
   );
