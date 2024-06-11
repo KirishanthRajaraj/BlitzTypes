@@ -1,11 +1,5 @@
 import * as React from 'react';
 import { useEffect, useState } from "react";
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import Box from '@mui/material/Box';
-import { Input } from "@material-tailwind/react";
-import { makeStyles, useTheme, styled } from '@material-ui/core/styles';
 import { WordsInChars } from '../interfaces/WordsInChars';
 import { CharObject } from '../interfaces/CharObject';
 import { useRef } from 'react';
@@ -84,9 +78,6 @@ const TextFieldLogic: React.FC<Props> = ({ InputArr, textFieldRef }) => {
             <input className='rounded-xl h-16 focus:outline-none opacity-0 padding-0 margin-0 absolute' 
             onChange={handleInputChange}
             ref={textFieldRef} />
-
-
-            <h1 className='text-2xl'>hello</h1>
         </>
     )
 

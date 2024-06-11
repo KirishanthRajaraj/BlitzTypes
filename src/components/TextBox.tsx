@@ -1,12 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from "react";
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Box from '@mui/material/Box';
 
 import * as ClientTextBox from "../client/textbox";
-import { makeStyles, useTheme, styled } from '@material-ui/core/styles';
 import { WordsInChars } from '../interfaces/WordsInChars';
 import { CharObject } from '../interfaces/CharObject';
 import { text } from 'node:stream/consumers';
@@ -23,16 +18,6 @@ interface EnglishWords {
 };
 
 const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
-
-  const theme = useTheme();
-
-  const useStyles = makeStyles({
-    box: {
-      height: 200,
-      overflow: 'hidden',
-      backgroundColor: theme.palette.secondary.main,
-    },
-  });
 
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
   const [wordId, setWordId] = useState<number>(0);
@@ -66,7 +51,6 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
 
   const getEnglishWords = () => {
     setIsFetchingData(true);
-    console.log("fetching data")
     ClientTextBox.getEnglishWords(toSkip, toTake)
       .then((response) => {
         const englishWords: Array<EnglishWords> = response.data.map((item: any) => ({
@@ -115,7 +99,7 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
       let inputword = inputWordsInChars[i];
       let textboxchars = allWordsInChars[i];
 
-      if ( typeof textboxchars !== 'undefined' ) {
+      if (typeof textboxchars !== 'undefined') {
 
         if (inputword.chars.length == 0 || inputword !== undefined) {
           let textboxcharsCopy = [...allWordsInChars]
@@ -129,17 +113,15 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
       }
 
       for (let j = 0; j < inputword.chars.length; j++) {
-        console.log("input " + inputword.chars.length)
-        console.log("j " + j)
-        if ( typeof textboxchars !== 'undefined' ) {
-        // reset inactive chars
-        for (let k = 0; k < textboxchars.chars.length - inputword.chars.length; k++) {
+        if (typeof textboxchars !== 'undefined') {
+          // reset inactive chars
+          for (let k = 0; k < textboxchars.chars.length - inputword.chars.length; k++) {
 
 
-          textboxchars.chars[inputword.chars.length + k].opacity = 0.6;
-          textboxchars.chars[inputword.chars.length + k].color = "white";
+            textboxchars.chars[inputword.chars.length + k].opacity = 0.6;
+            textboxchars.chars[inputword.chars.length + k].color = "white";
+          }
         }
-      }
 
         if (typeof textboxchars.chars[j] !== 'undefined') {
           if (inputword.chars[j].char === textboxchars.chars[j].char) {
@@ -152,8 +134,9 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
             textboxcharsCopy[i].chars[j].color = "white";
             textboxcharsCopy[i].chars[j].opacity = 100;
             // reset all char isCurrent properties to false
-            textboxcharsCopy.forEach(textbox => {textbox.chars.forEach(char => {char.isCurrent = false;});});
+            textboxcharsCopy.forEach(textbox => { textbox.chars.forEach(char => { char.isCurrent = false; }); });
             textboxcharsCopy[i].chars[j].isCurrent = true;
+            console.log(textboxcharsCopy[i].chars);
 
             setAllWordsInChars(textboxcharsCopy);
           } else {
@@ -165,9 +148,9 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
             let textboxcharsCopy = [...allWordsInChars]
             textboxcharsCopy[i].chars[j].color = "red";
             textboxcharsCopy[i].chars[j].opacity = 100;
-            textboxcharsCopy.forEach(textbox => {textbox.chars.forEach(char => {char.isCurrent = false;});});
+            textboxcharsCopy.forEach(textbox => { textbox.chars.forEach(char => { char.isCurrent = false; }); });
             textboxcharsCopy[i].chars[j].isCurrent = true;
-
+            console.log(textboxcharsCopy[i].chars);
             setAllWordsInChars(textboxcharsCopy);
           }
         }
@@ -191,7 +174,7 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
           {allWordsInChars.map((item, index) => (
             <span className='word'>
               {item.chars.map((char, charIndex) => (
-                <span className={`char ${char.isCurrent ? 'currentChar' : ''}`}  key={charIndex} style={{ color: char.color, opacity: char.opacity }}>{char.char}</span>
+                <span className={`char ${char.isCurrent ? 'currentChar' : ''}`} key={charIndex} style={{ color: char.color, opacity: char.opacity }}>{char.char}</span>
               ))} <span> </span>
             </span>
           ))}
@@ -202,23 +185,9 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
 
   return (
     <>
-      <Grid item sm={6}>
-        <Box sx={{
-          color: 'white',
-          height: '300px',
-          width: '700px',
-
-          overflow: 'hidden',
-          border: '5px solid white',
-          padding: '20px',
-          borderRadius: '20px'
-        }}
-          onClick={handleInputFieldRef}>
-          <Typography variant='h4' component="span">
-            {isLoaded()}
-          </Typography>
-        </Box>
-      </Grid>
+      <div onClick={handleInputFieldRef} className='text-white'>
+        {isLoaded()}
+      </div>
     </>
   );
 
