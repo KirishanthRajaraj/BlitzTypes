@@ -67,7 +67,6 @@
 }
 
 @keyframes blink {
-
   0%,
   50% {
     box-shadow: inset -2px 0 0 cyan;
@@ -79,8 +78,23 @@
   }
 }
 
+@keyframes blinkBefore {
+  0%,
+  50% {
+    box-shadow: inset 2px 0 0 cyan;
+  }
+
+  25%,
+  75% {
+    box-shadow: inset 2px 0 0 transparent;
+  }
+}
+
 span.currentChar {
   animation: blink 1.5s step-start infinite;
+}
+span.currentCharPrev {
+  animation: blinkBefore 1.5s step-start infinite;
 }
 
 @layer base {

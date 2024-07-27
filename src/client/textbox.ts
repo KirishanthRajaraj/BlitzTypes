@@ -8,3 +8,7 @@ export const getAllEnglishWords = () => {
 export const getEnglishWords = (toSkip: number, toTake: number)  => {
     return axios.get("https://localhost:7141/api/EnglishWords/GetEnglishWords", { params: { toSkip, toTake } });
 }
+
+export const getAverageWordLength = () => {
+    return axios.get("https://localhost:7141/api/EnglishWords/GetAverageWordLength");
+}

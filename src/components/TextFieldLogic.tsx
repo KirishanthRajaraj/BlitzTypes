@@ -33,8 +33,8 @@ const TextFieldLogic: React.FC<Props> = ({ InputArr, textFieldRef }) => {
     }
 
     useEffect(() => {
-        sendInputArr(allInputWordsInChars);
         handleCurrentWord(allInputWordsInChars);
+        sendInputArr(allInputWordsInChars);
     }, [allInputWordsInChars]);
 
     const sendInputArr = (InputWords: Array<WordsInChars>) => {
@@ -55,7 +55,6 @@ const TextFieldLogic: React.FC<Props> = ({ InputArr, textFieldRef }) => {
         wholeWord.forEach((wholeword) => {
             wholeword.word.split("").forEach((char) => {
                 inputCharArr.push({ char: char });
-
             });
             charGroupedInputWords.push({ chars: inputCharArr });
             setAllChars(inputCharArr);
