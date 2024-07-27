@@ -91,10 +91,10 @@
 }
 
 span.currentChar {
-  animation: blink 1.5s step-start infinite;
+  animation: blink 1s step-start infinite;
 }
 span.currentCharPrev {
-  animation: blinkBefore 1.5s step-start infinite;
+  animation: blinkBefore 1s step-start infinite;
 }
 
 @layer base {
