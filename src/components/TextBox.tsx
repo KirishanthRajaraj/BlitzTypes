@@ -5,11 +5,13 @@ import * as ClientTextBox from "../client/textbox";
 import { WordsInChars } from '../interfaces/WordsInChars';
 import { CharObject } from '../interfaces/CharObject';
 import { text } from 'node:stream/consumers';
+import BouncingDotsLoader from './BouncingDotsLoader';
 
 
 interface Props {
   InputWords: WordsInChars[];
   textFieldRef: React.RefObject<HTMLInputElement>;
+  allWordsArr: (words: WordsInChars[]) => void;
 }
 
 interface EnglishWords {
@@ -17,22 +19,22 @@ interface EnglishWords {
   word: string;
 };
 
-const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
+const TextBox: React.FC<Props> = ({ InputWords, textFieldRef, allWordsArr }) => {
 
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
   const [wordId, setWordId] = useState<number>(0);
   const [charId, setCharId] = useState<number>(0);
   const [allEnglishWords, setAllEnglishWords] = useState<Array<EnglishWords>>([]);
   const [allEnglishChars, setAllEnglishChars] = useState<Array<EnglishWords>>([]);
-  const [toSkip, setToSkip] = useState<number>(0);
-  const [toTake, setToTake] = useState<number>(50);
+  const [toSkip, setToSkip] = useState<number>(10);
+  const [toTake, setToTake] = useState<number>(10);
+  const initialWordCount = 30;
   const [allWordsInChars, setAllWordsInChars] = useState<Array<WordsInChars>>([]);
   const [inputWordsInChars, setInputWordsInChars] = useState<Array<WordsInChars>>([]);
   const [allChars, setAllChars] = useState<Array<CharObject>>([]);
   const [isCorrect, setIsCorrect] = useState<boolean>(true);
   const textboxRef = useRef<HTMLDivElement>(null);
   const [wordIndex, setWordIndex] = useState<number>(1);
-  const [currentRowDeletable, setCurrentRowDeletable] = useState<boolean>(false);
   const [wordsToDel, setWordsToDel] = useState([]);
   var isCurrentRowDeletable = false;
 
@@ -61,9 +63,12 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
 
   useEffect(() => {
     setTextboxHeight(2);
-
+    sendAllWordsArr(allWordsInChars);
   }, [allWordsInChars])
 
+  const sendAllWordsArr = (wordsArr: Array<WordsInChars>) => {
+    allWordsArr(wordsArr);
+  }
 
   const isNewLine = (index): boolean => {
     let wordElements;
@@ -72,8 +77,6 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
       const computedStyle = getComputedStyle(textboxRef.current);
       const textBoxWidth = textboxRef.current.clientWidth - (parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight));
       wordElements = textboxRef.current.querySelectorAll('div.word') as NodeListOf<HTMLDivElement> | null;
-      //console.log(wordElements[index]);
-      //console.log(wordElements[index - 1]);
 
       let prevWordElement = document.getElementById(`word-${index - 1}`);
       let currentWordElement = document.getElementById(`word-${index}`);
@@ -82,7 +85,6 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
       }
 
       if (currentWordElement.offsetTop !== prevWordElement.offsetTop) {
-        setCurrentRowDeletable(true);
         isCurrentRowDeletable = true;
         setWordIndex(1);
       }
@@ -90,8 +92,9 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
 
     if (isCurrentRowDeletable === true) {
       deleteWordsUpToIndex(index);
+      fetchMoreWords();
     }
-    return currentRowDeletable;
+    return isCurrentRowDeletable;
   }
 
   const setTextboxHeight = (visibleRowAmount: number) => {
@@ -99,9 +102,10 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
 
     if (textboxRef.current) {
       let childSpan = textboxRef.current.querySelector('span.char') as HTMLSpanElement | null;
-        if (childSpan) {
-          charFontHeight = childSpan.offsetHeight;
-        }
+      if (childSpan) {
+        charFontHeight = childSpan.offsetHeight;
+      }
+
     }
     let finalTextboxHeight = charFontHeight * visibleRowAmount - 5;
     let textBoxInner = textboxRef.current.querySelector('#text-box-inner') as HTMLSpanElement | null;
@@ -116,11 +120,12 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
         wordElement.remove();
       }
     }
+    isCurrentRowDeletable = false;
   }
 
   const getEnglishWords = () => {
     setIsFetchingData(true);
-    ClientTextBox.getEnglishWords(toSkip, toTake)
+    ClientTextBox.getEnglishWords(toSkip, initialWordCount)
       .then((response) => {
         const englishWords: Array<EnglishWords> = response.data.map((item: any) => ({
           id: item.id,
@@ -129,10 +134,28 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
         setAllEnglishWords(englishWords);
       })
       .finally(() => {
-        setIsFetchingData(false);
+          setIsFetchingData(false);
         isNewLine(0);
+        setToSkip(prevToSkip => prevToSkip + toTake)
       });
   };
+
+  const fetchMoreWords = () => {
+
+    ClientTextBox.getEnglishWords(toSkip, toTake)
+    .then((response) => {
+      const englishWords: Array<EnglishWords> = response.data.map((item: any) => ({
+        id: item.id,
+        word: item.words
+      }));
+      
+      setAllEnglishWords(englishWords);
+    })
+    .finally(() => {
+      isNewLine(inputWordsInChars.length - 1);
+      setToSkip(prevToSkip => prevToSkip + toTake)
+    });
+  }
 
   const splitWordsToChars = (allEnglishWords: Array<EnglishWords>) => {
 
@@ -202,6 +225,8 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
             setIsCorrect(true);
             textboxchars.isCorrect = isCorrect;
             textboxchars.chars[j].isCorrect = true;
+            textboxcharsCopy[inputWordsInChars.length - 1].isCorrect = true;
+            textboxcharsCopy[inputWordsInChars.length - 1].chars[j].isCorrect = true;
             // make text full white when it's correct
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].color = "white";
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].opacity = 100;
@@ -210,15 +235,15 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].isCurrent = true;
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].isTyped = true;
 
-            //console.log(textboxcharsCopy[i].chars);
             setAllWordsInChars(textboxcharsCopy);
           } else {
 
             setIsCorrect(false);
             textboxchars.isCorrect = isCorrect;
             textboxchars.chars[j].isCorrect = false;
+            textboxcharsCopy[inputWordsInChars.length - 1].isCorrect = false;
+            textboxcharsCopy[inputWordsInChars.length - 1].chars[j].isCorrect = false;
             // make text red when it's incorrect
-            let textboxcharsCopy = [...allWordsInChars]
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].color = "red";
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].opacity = 100;
             textboxcharsCopy.forEach(textbox => { textbox.chars.forEach(char => { char.isCurrent = false; }); });
@@ -229,9 +254,9 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
             if (j === textboxcharsCopy[inputWordsInChars.length - 1].chars.length - 1) {
               textboxcharsCopy[inputWordsInChars.length - 1].isTyped = true;
             }
-            //console.log(textboxcharsCopy[i].chars);
             setAllWordsInChars(textboxcharsCopy);
           }
+
         }
       }
 
@@ -243,7 +268,7 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
         if (textboxcharsCopy[inputWordsInChars.length - 1].chars[l].isTyped !== true) {
           wordIsTyped = false;
         }
-      } 
+      }
       if (wordIsTyped) {
         textboxcharsCopy[inputWordsInChars.length - 1].isTyped = true;
       }
@@ -265,7 +290,7 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
         }
 
         // set isCurrent of previous word false when new current word hasn't been typed yet
-        if(textboxcharsCopy[inputWordsInChars.length - 2].chars[textboxcharsCopy[inputWordsInChars.length - 2].chars.length - 1] && inputword.chars.length === 0){
+        if (textboxcharsCopy[inputWordsInChars.length - 2].chars[textboxcharsCopy[inputWordsInChars.length - 2].chars.length - 1] && inputword.chars.length === 0) {
           textboxcharsCopy[inputWordsInChars.length - 2].chars[textboxcharsCopy[inputWordsInChars.length - 2].chars.length - 1].isCurrent = false;
         }
 
@@ -284,9 +309,10 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
   const isLoaded = () => {
     return (
       isFetchingData ? (
-        <h3>Loading ...</h3>
+        <BouncingDotsLoader/>
       ) : (
-        <div>
+        <>
+        <div className='fade-transition fade-transition fade-in'>
           {allWordsInChars.map((item, index) => (
             <div className='word' id={`word-${index}`} key={`word-${index}`} style={{ display: 'inline' }}>
               {item.chars.map((char, charIndex) => (
@@ -295,13 +321,14 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef }) => {
             </div>
           ))}
         </div>
+        </>
       )
     );
   }
 
   return (
     <>
-      <div ref={textboxRef} className='container h-full min-h-[calc(100vh-200px)] flex aling-center items-center text-box'>
+      <div ref={textboxRef} className='container h-full min-h-[calc(100vh-200px)] flex align-center items-center text-box justify-center '>
         <div onClick={handleInputFieldRef} className='text-white text-center text-4xl text-box-inner' id='text-box-inner'>
           {isLoaded()}
         </div>

@@ -24,6 +24,14 @@ const ResultPopup: React.FC<Props> = ({timerFinished, userWordCount}) => {
                         <DialogDescription>
                             This action cannot be undone. This will permanently delete your account
                             and remove your data from our servers.
+                            <div className='test hello flex space-between'>
+                                <div>
+                                    ehloo
+                                </div>
+                                <div>
+                                    helloo
+                                </div>
+                            </div>
                         </DialogDescription>
                     </DialogHeader>
                 </DialogContent>

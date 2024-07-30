@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [inputWordsArr, setInputWordsArr] = useState<Array<WordsInChars>>([])
+  const [allWordsArr, setAllWordsArr] = useState<Array<WordsInChars>>([])
   const textFieldReference = useRef<HTMLInputElement>(null);
   const [isStartedTyping, setIsStartedTyping] = useState<boolean>(false);
   const [timerFinished, setTimerFinished] = useState<boolean>(false);
@@ -18,16 +19,14 @@ export default function Home() {
     if (inputWordsArr.length > 0) {
       setIsStartedTyping(true);
     }
+
   }, [inputWordsArr]);
   
   return (
-
     <main className="flex min-h-screen flex-col p-24">
-      <Counter CountDownAt={10} isStartedTyping={isStartedTyping} setTimerFinished={setTimerFinished} />
-
-      <TextBox InputWords={inputWordsArr} textFieldRef={textFieldReference} />
+      <Counter CountDownAt={12222} isStartedTyping={isStartedTyping} setTimerFinished={setTimerFinished} allWords={allWordsArr}/>
+      <TextBox InputWords={inputWordsArr} textFieldRef={textFieldReference} allWordsArr={setAllWordsArr} />
       <TextField InputArr={setInputWordsArr} textFieldRef={textFieldReference} />
-     {/*<ResultPopup timerFinished={timerFinished}  />*/}
     </main>
   );
 }
