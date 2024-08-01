@@ -6,26 +6,28 @@ import { WordsInChars } from '../interfaces/WordsInChars';
 import { CharObject } from '../interfaces/CharObject';
 import { text } from 'node:stream/consumers';
 import BouncingDotsLoader from './BouncingDotsLoader';
+import { Language } from '@/enums/language';
 
 
 interface Props {
   InputWords: WordsInChars[];
+  language: Language;
   textFieldRef: React.RefObject<HTMLInputElement>;
   allWordsArr: (words: WordsInChars[]) => void;
 }
 
-interface EnglishWords {
+interface Words {
   id: number;
   word: string;
 };
 
-const TextBox: React.FC<Props> = ({ InputWords, textFieldRef, allWordsArr }) => {
+const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWordsArr }) => {
 
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(Language.English);
   const [wordId, setWordId] = useState<number>(0);
   const [charId, setCharId] = useState<number>(0);
-  const [allEnglishWords, setAllEnglishWords] = useState<Array<EnglishWords>>([]);
-  const [allEnglishChars, setAllEnglishChars] = useState<Array<EnglishWords>>([]);
+  const [allWords, setAllWords] = useState<Array<Words>>([]);
   const [toSkip, setToSkip] = useState<number>(10);
   const [toTake, setToTake] = useState<number>(10);
   const initialWordCount = 30;
@@ -43,7 +45,15 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef, allWordsArr }) => 
   }, [InputWords])
 
   useEffect(() => {
-    getEnglishWords();
+    setCurrentLanguage(language);
+  }, [language])
+
+  useEffect(() => {
+    getWords();
+  }, [currentLanguage])
+
+  useEffect(() => {
+    getWords();
   }, [])
 
   useEffect(() => {
@@ -58,8 +68,8 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef, allWordsArr }) => 
   }, [inputWordsInChars.length])
 
   useEffect(() => {
-    splitWordsToChars(allEnglishWords);
-  }, [allEnglishWords])
+    splitWordsToChars(allWords);
+  }, [allWords])
 
   useEffect(() => {
     setTextboxHeight(2);
@@ -123,15 +133,17 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef, allWordsArr }) => 
     isCurrentRowDeletable = false;
   }
 
-  const getEnglishWords = () => {
+  const getWords = () => {
+    setAllWords([]);
+    setAllWordsInChars([]);
     setIsFetchingData(true);
-    ClientTextBox.getEnglishWords(toSkip, initialWordCount)
+    ClientTextBox.getWords(currentLanguage ,toSkip, initialWordCount)
       .then((response) => {
-        const englishWords: Array<EnglishWords> = response.data.map((item: any) => ({
+        const words: Array<Words> = response.data.map((item: any) => ({
           id: item.id,
           word: item.words
         }));
-        setAllEnglishWords(englishWords);
+        setAllWords(words);
       })
       .finally(() => {
           setIsFetchingData(false);
@@ -142,14 +154,14 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef, allWordsArr }) => 
 
   const fetchMoreWords = () => {
 
-    ClientTextBox.getEnglishWords(toSkip, toTake)
+    ClientTextBox.getWords(currentLanguage, toSkip, toTake)
     .then((response) => {
-      const englishWords: Array<EnglishWords> = response.data.map((item: any) => ({
+      const words: Array<Words> = response.data.map((item: any) => ({
         id: item.id,
         word: item.words
       }));
       
-      setAllEnglishWords(englishWords);
+      setAllWords(words);
     })
     .finally(() => {
       isNewLine(inputWordsInChars.length - 1);
@@ -157,9 +169,9 @@ const TextBox: React.FC<Props> = ({ InputWords, textFieldRef, allWordsArr }) => 
     });
   }
 
-  const splitWordsToChars = (allEnglishWords: Array<EnglishWords>) => {
+  const splitWordsToChars = (allWords: Array<Words>) => {
 
-    allEnglishWords.forEach((word) => {
+    allWords.forEach((word) => {
       let tempCharGroupedWord: Array<CharObject> = [];
       let charGroupedWord: Array<WordsInChars> = [];
       let wholeWord: Array<{ wordId: number, word: string }> = [];
