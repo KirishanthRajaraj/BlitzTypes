@@ -1,17 +1,22 @@
 'use client';
 
 import { Result } from '@/interfaces/Result';
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 interface AppContextProps {
   data: Result;
   setData: (data: Result) => void;
+  token: string;
+  saveToken: (token: string) => void;
+  removeToken: () => void;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<Result>();
+  const [token, setToken] = useState(Cookies.get('jwtToken') || '');
 
   const updateData = (newData: Partial<Result>) => {
     setData((prevData) => ({
@@ -19,9 +24,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       ...newData,
     }));
   };
+  
+  const saveToken = (newToken) => {
+    Cookies.set('jwtToken', newToken, { expires: 1, secure: true, sameSite: 'Strict' });
+    setToken(newToken);
+  };
+
+  const removeToken = () => {
+    Cookies.remove('jwtToken');
+    setToken('');
+  };
 
   return (
-    <AppContext.Provider value={{ data, setData: updateData }}>
+    <AppContext.Provider value={{ data, setData: updateData, token, saveToken, removeToken }}>
       {children}
     </AppContext.Provider>
   );
