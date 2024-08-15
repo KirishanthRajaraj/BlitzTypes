@@ -7,6 +7,7 @@ import { CharObject } from '../interfaces/CharObject';
 import { text } from 'node:stream/consumers';
 import BouncingDotsLoader from './BouncingDotsLoader';
 import { Language } from '@/enums/language';
+import { useAppContext } from '@/app/context/AppContext';
 
 
 interface Props {
@@ -38,6 +39,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   const textboxRef = useRef<HTMLDivElement>(null);
   const [wordIndex, setWordIndex] = useState<number>(1);
   const [wordsToDel, setWordsToDel] = useState([]);
+  const { data } = useAppContext();
   var isCurrentRowDeletable = false;
 
   useEffect(() => {
@@ -55,6 +57,15 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   useEffect(() => {
     getWords();
   }, [])
+
+/* for debugging 
+
+  useEffect(() => {
+    if (data?.currentTime !== undefined) {
+      console.log(data.currentTime);
+    }
+  }, [data.currentTime])
+*/
 
   useEffect(() => {
     assertInputText();
@@ -137,7 +148,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
     setAllWords([]);
     setAllWordsInChars([]);
     setIsFetchingData(true);
-    ClientTextBox.getWords(currentLanguage ,toSkip, initialWordCount)
+    ClientTextBox.getWords(currentLanguage, toSkip, initialWordCount)
       .then((response) => {
         const words: Array<Words> = response.data.map((item: any) => ({
           id: item.id,
@@ -146,7 +157,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
         setAllWords(words);
       })
       .finally(() => {
-          setIsFetchingData(false);
+        setIsFetchingData(false);
         isNewLine(0);
         setToSkip(prevToSkip => prevToSkip + toTake)
       });
@@ -155,18 +166,18 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   const fetchMoreWords = () => {
 
     ClientTextBox.getWords(currentLanguage, toSkip, toTake)
-    .then((response) => {
-      const words: Array<Words> = response.data.map((item: any) => ({
-        id: item.id,
-        word: item.words
-      }));
-      
-      setAllWords(words);
-    })
-    .finally(() => {
-      isNewLine(inputWordsInChars.length - 1);
-      setToSkip(prevToSkip => prevToSkip + toTake)
-    });
+      .then((response) => {
+        const words: Array<Words> = response.data.map((item: any) => ({
+          id: item.id,
+          word: item.words
+        }));
+
+        setAllWords(words);
+      })
+      .finally(() => {
+        isNewLine(inputWordsInChars.length - 1);
+        setToSkip(prevToSkip => prevToSkip + toTake)
+      });
   }
 
   const splitWordsToChars = (allWords: Array<Words>) => {
@@ -246,6 +257,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
             textboxcharsCopy.forEach(textbox => { textbox.chars.forEach(char => { char.isCurrent = false; }); });
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].isCurrent = true;
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].isTyped = true;
+            textboxcharsCopy[inputWordsInChars.length - 1].chars[j].timeStampTyped = data.currentTime;
 
             setAllWordsInChars(textboxcharsCopy);
           } else {
@@ -261,6 +273,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
             textboxcharsCopy.forEach(textbox => { textbox.chars.forEach(char => { char.isCurrent = false; }); });
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].isCurrent = true;
             textboxcharsCopy[inputWordsInChars.length - 1].chars[j].isTyped = true;
+            textboxcharsCopy[inputWordsInChars.length - 1].chars[j].timeStampTyped = data.currentTime;
 
             // check if current char in word is typed
             if (j === textboxcharsCopy[inputWordsInChars.length - 1].chars.length - 1) {
@@ -283,6 +296,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
       }
       if (wordIsTyped) {
         textboxcharsCopy[inputWordsInChars.length - 1].isTyped = true;
+        textboxcharsCopy[inputWordsInChars.length - 1].timeStampTyped = data.currentTime;
       }
 
       // initially set isCurrentPrev to false, also clears future changes in input
@@ -321,18 +335,18 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   const isLoaded = () => {
     return (
       isFetchingData ? (
-        <BouncingDotsLoader/>
+        <BouncingDotsLoader />
       ) : (
         <>
-        <div className='fade-transition fade-transition fade-in'>
-          {allWordsInChars.map((item, index) => (
-            <div className='word' id={`word-${index}`} key={`word-${index}`} style={{ display: 'inline' }}>
-              {item.chars.map((char, charIndex) => (
-                <span className={`char ${char.isCurrent ? 'currentChar' : ''} ${char.isCurrentPrev ? 'currentCharPrev' : ''}`} key={`${index}-${charIndex}`} style={{ color: char.color, opacity: char.opacity }} >{char.char}</span>
-              ))} <span> </span>
-            </div>
-          ))}
-        </div>
+          <div className='fade-transition fade-transition fade-in'>
+            {allWordsInChars.map((item, index) => (
+              <div className='word' id={`word-${index}`} key={`word-${index}`} style={{ display: 'inline' }}>
+                {item.chars.map((char, charIndex) => (
+                  <span className={`char ${char.isCurrent ? 'currentChar' : ''} ${char.isCurrentPrev ? 'currentCharPrev' : ''}`} key={`${index}-${charIndex}`} style={{ color: char.color, opacity: char.opacity }} >{char.char}</span>
+                ))} <span> </span>
+              </div>
+            ))}
+          </div>
         </>
       )
     );

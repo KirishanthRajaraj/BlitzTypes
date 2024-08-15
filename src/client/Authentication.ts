@@ -19,7 +19,7 @@ export const register = (username, email, password) => {
 }
 
 export const getUser = (token: string) => {
-    return axios.get("https://localhost:7141/api/User/getUser", {
+    return axios.get("https://localhost:7141/api/User/getCurrentUser", {
         headers: {
             Authorization: `Bearer ${token}`,
         },

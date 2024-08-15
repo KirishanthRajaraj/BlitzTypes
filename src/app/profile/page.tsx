@@ -26,7 +26,6 @@ export default function Profile() {
             const token = Cookies.get('jwtToken');
             userRes = await Auth.getUser(token);
             setUsername(userRes.data.userName);
-            console.log(userRes.data.request);
             setIsAuthenticated(true);
         } catch (error) {
             router.push('/login');

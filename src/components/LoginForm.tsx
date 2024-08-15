@@ -22,6 +22,7 @@ export function LoginForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const router = useRouter();
 
@@ -40,9 +41,10 @@ export function LoginForm() {
         let userRes: any;
         try {
             const token = Cookies.get('jwtToken');
+            console.log(token);
             userRes = await Auth.getUser(token);
             setIsAuthenticated(true);
-            router.push('/login');
+            router.push('/profile');
         } catch (error) {
             setIsAuthenticated(false);
             console.log(error);
@@ -53,10 +55,11 @@ export function LoginForm() {
         e.preventDefault();
         try {
             const response = await Auth.login(username, password);
+            console.log(response);
             if (response.status === 200) {
                 saveToken(response.data.token);
+                router.push('/profile');
             }
-            console.log(response);
         } catch (error) {
             console.error('Registration failed:', error);
             setError('Invalid login attempt.');
@@ -105,9 +108,16 @@ export function LoginForm() {
                         <Button type="submit" className="w-full">
                             Login
                         </Button>
-                        <Button variant="outline" className="w-full">
-                            Login with Google
-                        </Button>
+                        <form method='POST' action={`https://localhost:7141/api/Authentication/ExternalLogin?provider=Google&returnUrl=http://localhost:3000/profile`} >
+                            <Button variant="outline" className="w-full"
+                                    type="submit"
+                                    name='provider'
+                                    value='Google'
+                            >
+                                Login with Google
+                            </Button>
+                        </form>
+
                     </div>
                     <div className="mt-4 text-center text-sm">
                         Don&apos;t have an account?{" "}

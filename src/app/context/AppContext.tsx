@@ -15,7 +15,7 @@ interface AppContextProps {
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const [data, setData] = useState<Result>();
+  const [data, setData] = useState<Result>({currentTime: 1});
   const [token, setToken] = useState(Cookies.get('jwtToken') || '');
 
   const updateData = (newData: Partial<Result>) => {

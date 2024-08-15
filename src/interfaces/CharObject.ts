@@ -4,6 +4,7 @@ export interface CharObject {
     isCurrent?: boolean;
     isCurrentPrev?: boolean;
     isTyped?: boolean;
+    timeStampTyped?: number;
     color?: string;
     opacity?: number;
 }

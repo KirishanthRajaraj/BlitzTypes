@@ -4,4 +4,5 @@ export interface WordsInChars {
     chars: Array<CharObject>;
     isCorrect?: boolean;
     isTyped?: boolean;
+    timeStampTyped?: number;
 }

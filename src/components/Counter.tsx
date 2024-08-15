@@ -14,19 +14,31 @@ interface Props {
 
 const Counter: React.FC<Props> = ({ CountDownAt, isStartedTyping, setTimerFinished, allWords }) => {
     const [count, setCount] = useState<number>(CountDownAt);
+    const [countAt, setCountAt] = useState<number>(CountDownAt);
     const [allWordsInChars, setAllWordsInChars] = useState<Array<WordsInChars>>([]);
     const { setData } = useAppContext();
     const router = useRouter();
+    const [time, setTime] = useState<number>(0);
+
 
     useEffect(() => {
         setAllWordsInChars(allWords);
     }, [allWords])
 
     useEffect(() => {
+        setData({currentTime: time});
+    }, [time])
+
+    useEffect(() => {
+        setData({typingTime: countAt});
+    }, [countAt])
+
+    useEffect(() => {
 
         if (count > 0 && isStartedTyping === true) {
             const interval = setInterval(() => {
                 setCount(prevCount => prevCount - 1);
+                setTime(prevTime => prevTime + 1);
             }, 1000);
             return () => clearInterval(interval);
         }

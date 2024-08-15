@@ -13,11 +13,13 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faList } from '@fortawesome/free-solid-svg-icons';
 import * as Auth from "@/client/Authentication";
 import Cookies from 'js-cookie';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
+import { useAppContext } from "./context/AppContext";
 
 export default function Home() {
   const [inputWordsArr, setInputWordsArr] = useState<Array<WordsInChars>>([])
@@ -29,6 +31,7 @@ export default function Home() {
   const [username, setUsername] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLink, setAuthLink] = useState('');
+  const { setData } = useAppContext();
 
   const router = useRouter();
 
@@ -42,6 +45,10 @@ export default function Home() {
     }
   }, [inputWordsArr]);
 
+  useEffect(() => {
+    setData({language: language});
+  }, [language]);
+
   const getUser = async () => {
     let userRes: any;
     try {
@@ -52,7 +59,7 @@ export default function Home() {
       if (userRes.data.request.status === 200 || userRes.data.request.status === 201) {
         setIsAuthenticated(true);
         setAuthLink('/profile');
-      }  else {
+      } else {
         setIsAuthenticated(false);
         router.push('/login');
       }
@@ -67,9 +74,13 @@ export default function Home() {
     <main className="flex min-h-screen flex-col p-24">
       <div className="flex justify-between items-start">
         <div className="flex items-center">
-          <Counter CountDownAt={10} isStartedTyping={isStartedTyping} setTimerFinished={setTimerFinished} allWords={allWordsArr} />
+          <Counter CountDownAt={15} isStartedTyping={isStartedTyping} setTimerFinished={setTimerFinished} allWords={allWordsArr} />
         </div>
         <div className="flex items-center space-x-4 relative">
+          <Link href="/leaderboard">
+            <FontAwesomeIcon icon={faList} />
+          </Link>
+
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Button variant="ghost">{language}</Button>
