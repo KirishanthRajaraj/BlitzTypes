@@ -15,6 +15,9 @@ import {
 } from "@/components/ui/navigation-menu";
 import Link from "next/link"
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/toaster";
+import { Navigation } from "@/components/Navigation";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,10 +33,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AppProvider>
-        {children}
-        </AppProvider>
+      <body className={`${inter.className}`}>
+        <div className={`${inter.className} flex min-h-screen flex-col py-24 pt-12  max-w-[1320px] mx-auto px-8`}>
+          <AppProvider>
+            <Navigation className="pb-12"></Navigation>
+            <main>
+              {children}
+            </main>
+            <Toaster />
+          </AppProvider>
+        </div>
       </body>
     </html>
   );

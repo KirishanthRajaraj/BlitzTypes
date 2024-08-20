@@ -67,6 +67,7 @@
 }
 
 @keyframes blink {
+
   0%,
   50% {
     box-shadow: inset -2px 0 0 cyan;
@@ -79,6 +80,7 @@
 }
 
 @keyframes blinkBefore {
+
   0%,
   50% {
     box-shadow: inset 2px 0 0 cyan;
@@ -93,6 +95,7 @@
 span.currentChar {
   animation: blink 1s step-start infinite;
 }
+
 span.currentCharPrev {
   animation: blinkBefore 1s step-start infinite;
 }
@@ -107,16 +110,23 @@ span.currentCharPrev {
   animation: fadeIn 0.15s normal;
 }
 
+.blurred {
+  opacity: .25;
+  filter: blur(4px);
+  -webkit-filter: blur(4px);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
 
-.bouncing-loader > div {
+.bouncing-loader>div {
   width: 16px;
   height: 16px;
   margin: 3px 6px;
@@ -133,11 +143,11 @@ span.currentCharPrev {
   }
 }
 
-.bouncing-loader > div:nth-child(2) {
+.bouncing-loader>div:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.bouncing-loader > div:nth-child(3) {
+.bouncing-loader>div:nth-child(3) {
   animation-delay: 0.4s;
 }
 

@@ -8,6 +8,10 @@ import { text } from 'node:stream/consumers';
 import BouncingDotsLoader from './BouncingDotsLoader';
 import { Language } from '@/enums/language';
 import { useAppContext } from '@/app/context/AppContext';
+import Link from 'next/link';
+import { Button } from './ui/button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowPointer, faHandPointer, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 
 
 interface Props {
@@ -39,6 +43,8 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   const textboxRef = useRef<HTMLDivElement>(null);
   const [wordIndex, setWordIndex] = useState<number>(1);
   const [wordsToDel, setWordsToDel] = useState([]);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
   const { data } = useAppContext();
   var isCurrentRowDeletable = false;
 
@@ -55,17 +61,30 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   }, [currentLanguage])
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      if (document.activeElement === textFieldRef.current) {
+        setIsInputFocused(true);
+      } else {
+        setIsInputFocused(false);
+      }
+
+    }, 100);
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
+
+  useEffect(() => {
     getWords();
   }, [])
 
-/* for debugging 
-
-  useEffect(() => {
-    if (data?.currentTime !== undefined) {
-      console.log(data.currentTime);
-    }
-  }, [data.currentTime])
-*/
+  /* for debugging 
+  
+    useEffect(() => {
+      if (data?.currentTime !== undefined) {
+        console.log(data.currentTime);
+      }
+    }, [data.currentTime])
+  */
 
   useEffect(() => {
     assertInputText();
@@ -346,7 +365,9 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
                 ))} <span> </span>
               </div>
             ))}
+
           </div>
+
         </>
       )
     );
@@ -354,9 +375,19 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   return (
     <>
-      <div ref={textboxRef} className='container h-full min-h-[calc(100vh-200px)] flex align-center items-center text-box justify-center '>
-        <div onClick={handleInputFieldRef} className='text-white text-center text-4xl text-box-inner' id='text-box-inner'>
+      <div ref={textboxRef} className='container h-full min-h-[calc(68vh)] flex flex-col align-center items-center text-box justify-center relative'>
+        <div onClick={handleInputFieldRef} className={`text-white text-center text-4xl text-box-inner ${isInputFocused ? '' : 'blurred'}`} id='text-box-inner'>
           {isLoaded()}
+
+        </div>
+        {isInputFocused ? (<></>) : (
+          <div className="fade-in text-center text-xl font-bold h-0 top-[40%] z-[999] absolute w-full select-none pointer-events-none flex gap-4 justify-center">
+            <FontAwesomeIcon icon={faArrowPointer} />
+            Click to focus
+          </div>)
+        }
+        <div className={`w-full text-center py-10 ${isInputFocused ? '' : 'blurred'}`}>
+          <Link href="/"><Button variant="ghost" color='dark'><FontAwesomeIcon size='2x' icon={faRotateRight} /></Button></Link>
         </div>
       </div>
     </>

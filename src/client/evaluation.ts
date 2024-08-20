@@ -7,13 +7,16 @@ export const setWPMHighscore = (score: number, token: string) => {
         highScore: score,
     };
 
-    const headers:any = {
-            'Authorization': `Bearer ${token}`,
+    const headers: any = {
+        'Authorization': `Bearer ${token}`,
     };
 
     return axios.post(
         'https://localhost:7141/api/User/SetWPMHighscore',
-        {score: score},
-        {headers:headers, params:{score: score}}
+        { score: score },
+        {
+            params: { score: score },
+            withCredentials: true
+        },
     );
 }

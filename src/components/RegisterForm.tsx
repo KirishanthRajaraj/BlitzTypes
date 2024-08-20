@@ -15,6 +15,7 @@ import * as Auth from "../client/Authentication";
 import { useAppContext } from '@/app/context/AppContext';
 import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie';
+import { toast } from "./ui/use-toast"
 
 export function RegisterForm() {
 
@@ -45,7 +46,7 @@ export function RegisterForm() {
         let userRes: any;
         try {
             const token = Cookies.get('jwtToken');
-            userRes = await Auth.getUser(token);
+            userRes = await Auth.getUser();
             setIsAuthenticated(true);
             router.push('/profile');
 
@@ -72,12 +73,17 @@ export function RegisterForm() {
                 setPwIdentical(false);
             }
         } catch (error) {
-            let errArr = []
-            error.response.data.errorDesc.forEach((error) => {
+            let errArr = [];
+            error.response.data.error.forEach((error) => {
                 errArr.push(error);
             });
-            setRegistrationErrors(errArr);
-            console.error('Registration failed:', error);
+            const errors = errArr.join('\n');
+            toast({
+                variant: "destructive",
+                title: "Login failed",
+                description: errors,
+              });
+            console.log('Registration failed:', errors);
             setError('Invalid sign up attempt.');
         }
     };

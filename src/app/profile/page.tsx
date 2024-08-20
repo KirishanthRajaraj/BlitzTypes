@@ -4,6 +4,7 @@ import * as Auth from "../../client/Authentication";
 import { useAppContext } from '../context/AppContext';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button';
 
 export default function Profile() {
     const [username, setUsername] = useState('');
@@ -15,7 +16,6 @@ export default function Profile() {
         getUser();
     }, []);
 
-
     useEffect(() => {
 
     }, [isAuthenticated]);
@@ -23,20 +23,40 @@ export default function Profile() {
     const getUser = async () => {
         let userRes: any;
         try {
-            const token = Cookies.get('jwtToken');
-            userRes = await Auth.getUser(token);
+            userRes = await Auth.getUser();
             setUsername(userRes.data.userName);
             setIsAuthenticated(true);
         } catch (error) {
-            router.push('/login');
+            if (error.request.status === 401) {
+                try {
+                    await Auth.getToken();
+                    getUser();
+                } catch (error) {
+                    router.push("/login");
+                    console.log(error);
+                }
+            }
+            console.log(error);
+        }
+    }
+
+    const logoutUser = async () => {
+        let response: any;
+        try {
+            response = await Auth.logout();
+            location.reload();
+        } catch (error) {
             console.log(error);
         }
     }
 
     return (
-        <main className="flex min-h-screen flex-col p-24">
+        <>
             <h1>Profile</h1>
             <h1>Welcome {username}</h1>
-        </main>
+            <Button className='w-auto' variant='ghost' onClick={logoutUser}>
+                Logout
+            </Button>
+        </>
     )
 }

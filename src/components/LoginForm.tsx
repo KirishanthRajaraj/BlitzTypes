@@ -15,6 +15,9 @@ import * as Auth from "../client/Authentication";
 import { useAppContext } from '@/app/context/AppContext';
 import Cookies from 'js-cookie';
 import { useRouter } from "next/navigation"
+import { Toast, ToastAction } from "./ui/toast"
+import { toast, useToast } from "./ui/use-toast"
+import { Toaster } from "./ui/toaster"
 
 export function LoginForm() {
 
@@ -25,6 +28,7 @@ export function LoginForm() {
     const [isLoading, setIsLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const router = useRouter();
+    const { toast } = useToast()
 
     useEffect(() => {
         getUser();
@@ -42,7 +46,7 @@ export function LoginForm() {
         try {
             const token = Cookies.get('jwtToken');
             console.log(token);
-            userRes = await Auth.getUser(token);
+            userRes = await Auth.getUser();
             setIsAuthenticated(true);
             router.push('/profile');
         } catch (error) {
@@ -55,18 +59,21 @@ export function LoginForm() {
         e.preventDefault();
         try {
             const response = await Auth.login(username, password);
-            console.log(response);
             if (response.status === 200) {
-                saveToken(response.data.token);
                 router.push('/profile');
             }
         } catch (error) {
-            console.error('Registration failed:', error);
-            setError('Invalid login attempt.');
+            toast({
+                variant: "destructive",
+                title: "Login failed",
+                description: error.response.data.error,
+              })
+              console.log(error);
         }
     };
 
     return (
+        <>
         <form onSubmit={handleSubmit} className="mx-auto max-w-sm border-0">
             <Card className="mx-auto max-w-sm">
                 <CardHeader>
@@ -108,7 +115,7 @@ export function LoginForm() {
                         <Button type="submit" className="w-full">
                             Login
                         </Button>
-                        <form method='POST' action={`https://localhost:7141/api/Authentication/ExternalLogin?provider=Google&returnUrl=http://localhost:3000/profile`} >
+                        <form method='POST' action={`https://localhost:7141/api/Authentication/ExternalLogin?provider=Google&returnUrl=https://localhost:3000/profile`} >
                             <Button variant="outline" className="w-full"
                                     type="submit"
                                     name='provider'
@@ -129,5 +136,6 @@ export function LoginForm() {
             </Card>
         </form>
 
+        </>
     )
 }

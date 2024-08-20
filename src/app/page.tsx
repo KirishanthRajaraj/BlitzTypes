@@ -12,7 +12,7 @@ import { WordsInChars } from "@/interfaces/WordsInChars";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faRotateRight, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faList } from '@fortawesome/free-solid-svg-icons';
 import * as Auth from "@/client/Authentication";
 import Cookies from 'js-cookie';
@@ -36,71 +36,26 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    getUser();
-  }, []);
-
-  useEffect(() => {
     if (inputWordsArr.length > 0) {
       setIsStartedTyping(true);
     }
   }, [inputWordsArr]);
 
   useEffect(() => {
-    setData({language: language});
+    setData({ language: language });
   }, [language]);
 
-  const getUser = async () => {
-    let userRes: any;
-    try {
-      setAuthLink('/login');
-      const token = Cookies.get('jwtToken');
-      userRes = await Auth.getUser(token);
-      setUsername(userRes.data.userName);
-      if (userRes.data.request.status === 200 || userRes.data.request.status === 201) {
-        setIsAuthenticated(true);
-        setAuthLink('/profile');
-      } else {
-        setIsAuthenticated(false);
-        router.push('/login');
-      }
-
-    } catch (error) {
-      setAuthLink('/login');
-      console.log(error);
-    }
-  }
-
   return (
-    <main className="flex min-h-screen flex-col p-24">
-      <div className="flex justify-between items-start">
-        <div className="flex items-center">
-          <Counter CountDownAt={15} isStartedTyping={isStartedTyping} setTimerFinished={setTimerFinished} allWords={allWordsArr} />
-        </div>
-        <div className="flex items-center space-x-4 relative">
-          <Link href="/leaderboard">
-            <FontAwesomeIcon icon={faList} />
-          </Link>
+    <>
+      <div className="">
+        <div className="flex justify-between items-start">
+          <Counter CountDownAt={10} isStartedTyping={isStartedTyping} setTimerFinished={setTimerFinished} allWords={allWordsArr} />
 
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="ghost">{language}</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Languages</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setLanguage(Language.English)}>English</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setLanguage(Language.German)}>German (Switzerland)</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Separator orientation="vertical" className="h-12" />
-          <Link href={authLink}>
-            <FontAwesomeIcon icon={faUser} />
-          </Link>
         </div>
+        <TextBox InputWords={inputWordsArr} language={language} textFieldRef={textFieldReference} allWordsArr={setAllWordsArr} />
+        <TextField InputArr={setInputWordsArr} textFieldRef={textFieldReference} />
       </div>
-      <TextBox InputWords={inputWordsArr} language={language} textFieldRef={textFieldReference} allWordsArr={setAllWordsArr} />
-      <TextField InputArr={setInputWordsArr} textFieldRef={textFieldReference} />
 
-    </main>
+    </>
   );
 }
