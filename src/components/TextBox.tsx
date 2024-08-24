@@ -43,10 +43,15 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   const textboxRef = useRef<HTMLDivElement>(null);
   const [wordIndex, setWordIndex] = useState<number>(1);
   const [wordsToDel, setWordsToDel] = useState([]);
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(true);
+  const blurTimeoutRef = useRef(null);
 
   const { data } = useAppContext();
   var isCurrentRowDeletable = false;
+
+  useEffect(() => {
+    textFieldRef.current.focus();
+  }, [])
 
   useEffect(() => {
     setInputWordsInChars(InputWords);
@@ -61,16 +66,37 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   }, [currentLanguage])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (document.activeElement === textFieldRef.current) {
-        setIsInputFocused(true);
-      } else {
-        setIsInputFocused(false);
+    const handleFocus = () => {
+      setIsInputFocused(true);
+
+      // clear timeout
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+        blurTimeoutRef.current = null;
       }
+    };
 
-    }, 100);
+    const handleBlur = () => {
+      blurTimeoutRef.current = setTimeout(() => {
+        setIsInputFocused(false);
+      }, 500);
+    };
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    const inputElement = textFieldRef.current;
+
+    if (inputElement) {
+      inputElement.addEventListener('focus', handleFocus);
+      inputElement.addEventListener('blur', handleBlur);
+    }
+
+    window.addEventListener('keydown', handleAnyKeyPressed);
+
+    return () => {
+      if (inputElement) {
+        inputElement.removeEventListener('focus', handleFocus);
+        inputElement.removeEventListener('blur', handleBlur);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -105,6 +131,10 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
     setTextboxHeight(2);
     sendAllWordsArr(allWordsInChars);
   }, [allWordsInChars])
+
+  const handleAnyKeyPressed = () => {
+    textFieldRef.current.focus();
+  }
 
   const sendAllWordsArr = (wordsArr: Array<WordsInChars>) => {
     allWordsArr(wordsArr);
@@ -386,8 +416,9 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
             Click to focus
           </div>)
         }
-        <div className={`w-full text-center py-10 ${isInputFocused ? '' : 'blurred'}`}>
-          <Link href="/"><Button variant="ghost" color='dark'><FontAwesomeIcon size='2x' icon={faRotateRight} /></Button></Link>
+        <div onClick={handleInputFieldRef} className={`w-full text-center py-10 ${isInputFocused ? '' : 'blurred'}`}>
+          <Link href="/" onInput={getWords} onKeyDown={(event) => {if (event.key === 'Enter') {getWords();}
+        }}><Button onClick={getWords} variant="ghost" color='dark'><FontAwesomeIcon size='2x' icon={faRotateRight} /></Button></Link>
         </div>
       </div>
     </>

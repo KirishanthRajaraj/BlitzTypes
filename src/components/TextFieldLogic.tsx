@@ -74,7 +74,7 @@ const TextFieldLogic: React.FC<Props> = ({ InputArr, textFieldRef }) => {
 
     return (
         <>
-            <input className='rounded-xl h-16 focus:outline-none opacity-0 padding-0 margin-0 absolute' 
+            <input className='textbox-input rounded-xl h-16 focus:outline-none opacity-0 padding-0 margin-0 absolute' 
             onChange={handleInputChange}
             ref={textFieldRef} />
         </>

@@ -4,11 +4,11 @@ import { Language } from "@/enums/language";
 
 axios.defaults.withCredentials = true;
 
-export const login = (username, password) => {
+export const login = (username, password, rememberMe) => {
     return axios.post("https://localhost:7141/api/Authentication/login", {
         Username: username,
         Password: password,
-        RememberMe: false
+        RememberMe: rememberMe
     }, {
         withCredentials: true
     });

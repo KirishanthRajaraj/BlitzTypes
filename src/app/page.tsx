@@ -52,8 +52,8 @@ export default function Home() {
           <Counter CountDownAt={10} isStartedTyping={isStartedTyping} setTimerFinished={setTimerFinished} allWords={allWordsArr} />
 
         </div>
-        <TextBox InputWords={inputWordsArr} language={language} textFieldRef={textFieldReference} allWordsArr={setAllWordsArr} />
         <TextField InputArr={setInputWordsArr} textFieldRef={textFieldReference} />
+        <TextBox InputWords={inputWordsArr} language={language} textFieldRef={textFieldReference} allWordsArr={setAllWordsArr} />
       </div>
 
     </>
