@@ -32,29 +32,10 @@ export function RegisterForm() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        getUser();
-    }, []);
-
-    useEffect(() => {
         if (isAuthenticated === true) {
             router.push("/profile")
         }
     }, [isAuthenticated]);
-
-    // to determine if there is already an active user logged in
-    const getUser = async () => {
-        let userRes: any;
-        try {
-            const token = Cookies.get('jwtToken');
-            userRes = await Auth.getUser();
-            setIsAuthenticated(true);
-            router.push('/profile');
-
-        } catch (error) {
-            setIsAuthenticated(false);
-            console.log(error);
-        }
-    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();

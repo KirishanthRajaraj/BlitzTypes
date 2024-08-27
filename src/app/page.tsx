@@ -31,7 +31,7 @@ export default function Home() {
   const [username, setUsername] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLink, setAuthLink] = useState('');
-  const { setData } = useAppContext();
+  const { setData, data } = useAppContext();
 
   const router = useRouter();
 
@@ -45,12 +45,15 @@ export default function Home() {
     setData({ language: language });
   }, [language]);
 
+  useEffect(() => {
+    setData({ typingTime: 10 });
+  }, []);
+
   return (
     <>
       <div className="">
         <div className="flex justify-between items-start">
-          <Counter CountDownAt={10} isStartedTyping={isStartedTyping} setTimerFinished={setTimerFinished} allWords={allWordsArr} />
-
+          <Counter CountDownAt={data.typingTime} isStartedTyping={isStartedTyping} setTimerFinished={setTimerFinished} allWords={allWordsArr} />
         </div>
         <TextField InputArr={setInputWordsArr} textFieldRef={textFieldReference} />
         <TextBox InputWords={inputWordsArr} language={language} textFieldRef={textFieldReference} allWordsArr={setAllWordsArr} />

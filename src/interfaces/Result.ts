@@ -1,3 +1,4 @@
+import { Language } from "@/enums/language";
 import { WordsInChars } from "./WordsInChars";
 
 export interface Result {
@@ -5,6 +6,7 @@ export interface Result {
     isFinished?: boolean;
     typingTime?: number;
     currentTime?: number;
+    language?: Language;
     interval?: number;
     [key: string]: any;
 }

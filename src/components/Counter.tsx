@@ -14,24 +14,23 @@ interface Props {
 
 const Counter: React.FC<Props> = ({ CountDownAt, isStartedTyping, setTimerFinished, allWords }) => {
     const [count, setCount] = useState<number>(CountDownAt);
-    const [countAt, setCountAt] = useState<number>(CountDownAt);
     const [allWordsInChars, setAllWordsInChars] = useState<Array<WordsInChars>>([]);
-    const { setData } = useAppContext();
+    const { setData, data } = useAppContext();
     const router = useRouter();
     const [time, setTime] = useState<number>(0);
-
 
     useEffect(() => {
         setAllWordsInChars(allWords);
     }, [allWords])
 
     useEffect(() => {
-        setData({currentTime: time});
+        setData({ currentTime: time });
     }, [time])
 
     useEffect(() => {
-        setData({typingTime: countAt});
-    }, [countAt])
+        console.log(data.typingTime);
+        setCount(data.typingTime);
+    }, [data.typingTime]);
 
     useEffect(() => {
 
@@ -49,7 +48,7 @@ const Counter: React.FC<Props> = ({ CountDownAt, isStartedTyping, setTimerFinish
 
     const sendTimerFinished = () => {
         router.push('/evaluation');
-        setData({ finalWords: allWordsInChars, isFinished: true, typingTime: CountDownAt});
+        setData({ finalWords: allWordsInChars, isFinished: true, typingTime: CountDownAt });
     }
 
     return (

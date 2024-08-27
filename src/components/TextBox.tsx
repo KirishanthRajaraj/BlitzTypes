@@ -46,11 +46,12 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   const [isInputFocused, setIsInputFocused] = useState(true);
   const blurTimeoutRef = useRef(null);
 
-  const { data } = useAppContext();
+  const { setData, data } = useAppContext();
   var isCurrentRowDeletable = false;
 
   useEffect(() => {
     textFieldRef.current.focus();
+    moveCurrentCursor();
   }, [])
 
   useEffect(() => {
@@ -64,6 +65,10 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   useEffect(() => {
     getWords();
   }, [currentLanguage])
+
+  useEffect(() => {
+    setCurrentLanguage(data.language);
+  }, [data.language])
 
   useEffect(() => {
     const handleFocus = () => {
@@ -101,6 +106,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   useEffect(() => {
     getWords();
+
   }, [])
 
   /* for debugging 
@@ -114,6 +120,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   useEffect(() => {
     assertInputText();
+    moveCurrentCursor();
   }, [inputWordsInChars])
 
   useEffect(() => {
@@ -147,7 +154,6 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
       const computedStyle = getComputedStyle(textboxRef.current);
       const textBoxWidth = textboxRef.current.clientWidth - (parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight));
       wordElements = textboxRef.current.querySelectorAll('div.word') as NodeListOf<HTMLDivElement> | null;
-
       let prevWordElement = document.getElementById(`word-${index - 1}`);
       let currentWordElement = document.getElementById(`word-${index}`);
       if (prevWordElement === null) {
@@ -369,7 +375,15 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
           textboxcharsCopy[inputWordsInChars.length - 2].chars[textboxcharsCopy[inputWordsInChars.length - 2].chars.length - 1].isCurrent = false;
         }
 
+        // check if next word (space was pressed)
+        if (inputWordsInChars[inputWordsInChars.length - 1].chars.length == 0) {
+          textboxcharsCopy[inputWordsInChars.length - 2].chars.forEach((char) => char.isCurrent = false);
+          textboxcharsCopy[inputWordsInChars.length - 1].chars[0].isCurrentPrev = true;
+        }
       }
+
+
+
       setAllWordsInChars(textboxcharsCopy);
       // #endregion
     }
@@ -381,6 +395,25 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
     }
   };
 
+  const handleRestart = (event) => {
+    if (event.key === 'Enter') {
+      getWords();
+      if (textFieldRef.current) {
+        textFieldRef.current.value = "";
+      }
+      let prevTime = data.typingTime;
+      setData({typingTime: prevTime});
+    }
+  }
+
+  // todo later
+  const moveCurrentCursor = () => {
+    if (textboxRef.current) {
+      var wordElements = textboxRef.current.querySelectorAll('div.word') as NodeListOf<HTMLDivElement> | null;
+    }
+
+  }
+
   const isLoaded = () => {
     return (
       isFetchingData ? (
@@ -391,7 +424,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
             {allWordsInChars.map((item, index) => (
               <div className='word' id={`word-${index}`} key={`word-${index}`} style={{ display: 'inline' }}>
                 {item.chars.map((char, charIndex) => (
-                  <span className={`char ${char.isCurrent ? 'currentChar' : ''} ${char.isCurrentPrev ? 'currentCharPrev' : ''}`} key={`${index}-${charIndex}`} style={{ color: char.color, opacity: char.opacity }} >{char.char}</span>
+                  <span className={`char ${char.isCurrent ? 'currentChar' : ''} ${char.isCurrentPrev ? 'currentCharPrev' : ''} transition-all duration-[125ms]`} key={`${index}-${charIndex}`} style={{ color: char.color, opacity: char.opacity }} >{char.char}</span>
                 ))} <span> </span>
               </div>
             ))}
@@ -417,8 +450,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
           </div>)
         }
         <div onClick={handleInputFieldRef} className={`w-full text-center py-10 ${isInputFocused ? '' : 'blurred'}`}>
-          <Link href="/" onInput={getWords} onKeyDown={(event) => {if (event.key === 'Enter') {getWords();}
-        }}><Button onClick={getWords} variant="ghost" color='dark'><FontAwesomeIcon size='2x' icon={faRotateRight} /></Button></Link>
+          <Link href="/" onInput={getWords} onKeyDown={handleRestart}><Button onClick={getWords} variant="ghost" color='dark'><FontAwesomeIcon size='2x' icon={faRotateRight} /></Button></Link>
         </div>
       </div>
     </>

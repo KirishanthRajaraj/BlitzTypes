@@ -70,12 +70,12 @@
 
   0%,
   50% {
-    box-shadow: inset -2px 0 0 cyan;
+    box-shadow: inset -2px 0 0 transparent;
   }
 
   25%,
   75% {
-    box-shadow: inset -2px 0 0 transparent;
+    box-shadow: inset -2px 0 0 cyan;
   }
 }
 
@@ -83,12 +83,12 @@
 
   0%,
   50% {
-    box-shadow: inset 2px 0 0 cyan;
+    box-shadow: inset 2px 0 0 transparent;
   }
 
   25%,
   75% {
-    box-shadow: inset 2px 0 0 transparent;
+    box-shadow: inset 2px 0 0 cyan;
   }
 }
 

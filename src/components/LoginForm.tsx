@@ -33,10 +33,6 @@ export function LoginForm() {
     const { toast } = useToast()
 
     useEffect(() => {
-        getUser();
-    }, []);
-
-    useEffect(() => {
         console.log(rememberMe);
     }, [rememberMe]);
 
@@ -45,21 +41,6 @@ export function LoginForm() {
             router.push("/profile")
         }
     }, [isAuthenticated]);
-
-    // to determine if there is already an active user logged in
-    const getUser = async () => {
-        let userRes: any;
-        try {
-            const token = Cookies.get('jwtToken');
-            console.log(token);
-            userRes = await Auth.getUser();
-            setIsAuthenticated(true);
-            router.push('/profile');
-        } catch (error) {
-            setIsAuthenticated(false);
-            console.log(error);
-        }
-    }
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRememberMe(event.target.checked);

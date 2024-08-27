@@ -22,15 +22,16 @@ export const register = (username, email, password) => {
     });
 }
 
-export const getUser = () => {
-    return axios.get("https://localhost:7141/api/User/getCurrentUserForFrontend", {
+export const getToken = () => {
+    return axios.post("https://localhost:7141/api/Authentication/getToken", {
         withCredentials: true
     });
 }
 
-export const getToken = () => {
-    return axios.post("https://localhost:7141/api/Authentication/getToken", {
-        withCredentials: true
+export const getTokenFetch = () => {
+    return fetch("https://localhost:7141/api/Authentication/getToken", {
+        method: 'POST',
+        credentials: 'include',
     });
 }
 
