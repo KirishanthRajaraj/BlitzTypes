@@ -44,8 +44,8 @@ export default function Login() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {candidates.map((candidate) => (
-            <TableRow key={candidate.invoice}>
+          {candidates.map((candidate, index) => (
+            <TableRow key={index}>
               <TableCell className="font-medium">{candidate.userName}</TableCell>
               <TableCell>{candidate.highScoreWPM} <span className='text-xs text-muted-foreground'>wpm</span></TableCell>
             </TableRow>

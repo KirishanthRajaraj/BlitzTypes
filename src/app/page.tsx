@@ -33,11 +33,16 @@ export default function Home() {
   const [authLink, setAuthLink] = useState('');
   const { setData, data } = useAppContext();
 
+
   const router = useRouter();
 
   useEffect(() => {
     if (inputWordsArr.length > 0) {
       setIsStartedTyping(true);
+      setData({isStartedTyping: true});
+    } else {
+      setIsStartedTyping(false);
+      setData({isStartedTyping: false});
     }
   }, [inputWordsArr]);
 
@@ -46,8 +51,30 @@ export default function Home() {
   }, [language]);
 
   useEffect(() => {
-    setData({ typingTime: 10 });
+    setData({ typingTime: data.typingTime });
   }, []);
+
+  const isUserAuthenticated = async () => {
+    try {
+      let res = await Auth.isAuthenicated();
+      setIsAuthenticated(true);
+    } catch (error) {
+
+      try {
+
+        await Auth.getToken();
+        await isUserAuthenticated();
+
+      } catch (error) {
+        // your are currently not logged in toast or so
+        router.push("/login")
+        console.log(error);
+        setIsAuthenticated(false);
+      }
+
+      console.error(error);
+    }
+  }
 
   return (
     <>

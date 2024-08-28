@@ -22,6 +22,10 @@ export const register = (username, email, password) => {
     });
 }
 
+export const isAuthenicated = () => {
+    return axios.get("https://localhost:7141/api/Authentication/isAuthenticated");
+}
+
 export const getToken = () => {
     return axios.post("https://localhost:7141/api/Authentication/getToken", {
         withCredentials: true

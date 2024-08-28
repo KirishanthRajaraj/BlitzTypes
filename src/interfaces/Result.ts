@@ -8,5 +8,6 @@ export interface Result {
     currentTime?: number;
     language?: Language;
     interval?: number;
+    isStartedTyping?: boolean;
     [key: string]: any;
 }

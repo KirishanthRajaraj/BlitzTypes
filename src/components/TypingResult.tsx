@@ -43,7 +43,6 @@ const TypingResult = () => {
             });
             let wordsPerMin = (correctWordsAmount / data.typingTime) * 60;
 
-            console.log(data.finalWords);
             return wordsPerMin;
         }
     }

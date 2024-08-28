@@ -28,19 +28,19 @@ const Counter: React.FC<Props> = ({ CountDownAt, isStartedTyping, setTimerFinish
     }, [time])
 
     useEffect(() => {
-        console.log(data.typingTime);
         setCount(data.typingTime);
     }, [data.typingTime]);
 
     useEffect(() => {
-
-        if (count > 0 && isStartedTyping === true) {
+        if (count > 0 && data.isStartedTyping === true) {
+            setData({ isStartedTyping: true });
             const interval = setInterval(() => {
                 setCount(prevCount => prevCount - 1);
                 setTime(prevTime => prevTime + 1);
             }, 1000);
             return () => clearInterval(interval);
         }
+
         if (count <= 0) {
             sendTimerFinished();
         }
@@ -52,7 +52,7 @@ const Counter: React.FC<Props> = ({ CountDownAt, isStartedTyping, setTimerFinish
     }
 
     return (
-        <div className='counter text-6xl text-white'>
+        <div className={`${data.isStartedTyping ? 'opacity-100' : 'opacity-0'} transition-opacity ease-in-out duration-300 counter text-6xl text-white`}>
             <p>{count}</p>
         </div>
     )

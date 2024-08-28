@@ -24,6 +24,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       ...newData,
     }));
   };
+
+  useEffect(() => {
+    console.log(data);
+  }, [data])
   
   const saveToken = (newToken) => {
     Cookies.set('jwtToken', newToken, { expires: 1, secure: true, sameSite: 'Strict' });

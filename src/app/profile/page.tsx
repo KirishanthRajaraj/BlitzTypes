@@ -19,9 +19,7 @@ export default function Profile() {
 
     return (
         <>
-            <h1 className='text-5xl font-bold mb-6'>Profile</h1>
             <UserProfile></UserProfile>
-
         </>
     )
 }

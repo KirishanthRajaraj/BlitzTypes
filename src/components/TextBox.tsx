@@ -12,6 +12,9 @@ import Link from 'next/link';
 import { Button } from './ui/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowPointer, faHandPointer, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { Separator } from './ui/separator';
+import { Countdown } from '@/enums/countdown';
 
 
 interface Props {
@@ -30,6 +33,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
   const [currentLanguage, setCurrentLanguage] = useState<Language>(Language.English);
+  const [currentCountdown, setCurrentCountdown] = useState<Countdown>(Countdown.Seconds_15);
   const [wordId, setWordId] = useState<number>(0);
   const [charId, setCharId] = useState<number>(0);
   const [allWords, setAllWords] = useState<Array<Words>>([]);
@@ -55,6 +59,10 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   }, [])
 
   useEffect(() => {
+    setData({typingTime: currentCountdown})
+  }, [currentCountdown])
+
+  useEffect(() => {
     setInputWordsInChars(InputWords);
   }, [InputWords])
 
@@ -65,6 +73,10 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   useEffect(() => {
     getWords();
   }, [currentLanguage])
+
+  useEffect(() => {
+    console.log("input focus changed");
+  }, [isInputFocused])
 
   useEffect(() => {
     setCurrentLanguage(data.language);
@@ -160,9 +172,11 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
         prevWordElement = currentWordElement;
       }
 
-      if (currentWordElement.offsetTop !== prevWordElement.offsetTop) {
-        isCurrentRowDeletable = true;
-        setWordIndex(1);
+      if (currentWordElement && prevWordElement) {
+        if (currentWordElement.offsetTop !== prevWordElement.offsetTop) {
+          isCurrentRowDeletable = true;
+          setWordIndex(1);
+        }
       }
     }
 
@@ -401,8 +415,19 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
       if (textFieldRef.current) {
         textFieldRef.current.value = "";
       }
-      let prevTime = data.typingTime;
-      setData({typingTime: prevTime});
+
+      let cd;
+      switch (currentCountdown) {
+        case Countdown.Seconds_15:
+          cd = 15;
+        case Countdown.Seconds_30:
+          cd = 30;
+        case Countdown.Seconds_60:
+          cd = 60;
+        default:
+          cd = 15;
+      }
+      setData({ typingTime: cd, isStartedTyping: false });
     }
   }
 
@@ -438,13 +463,39 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   return (
     <>
-      <div ref={textboxRef} className='container h-full min-h-[calc(68vh)] flex flex-col align-center items-center text-box justify-center relative'>
+      <div ref={textboxRef} className='container h-full min-h-[calc(68vh)] flex flex-col align-center items-center text-box justify-center relative gap-16'>
+        <div className='flex items-center'>
+          <DropdownMenu>
+            <DropdownMenuTrigger tabIndex={1} className={`${data.isStartedTyping ? 'opacity-0 hidden' : 'opacity-100'} transition-opacity ease-in-out duration-300 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2`}>
+              {language}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='z-[100] relative'>
+              <DropdownMenuLabel>Languages</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setCurrentLanguage(Language.English)}>English</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setCurrentLanguage(Language.German)}>German (Switzerland)</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Separator orientation="vertical" className={`${data.isStartedTyping ? ' opacity-0' : 'opacity-100'} transition-opacity ease-in-out duration-300 h-8`}></Separator>
+          <DropdownMenu>
+            <DropdownMenuTrigger tabIndex={1} className={`${data.isStartedTyping ? ' opacity-0' : 'opacity-100'} transition-opacity ease-in-out duration-300 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2`}>
+              {currentCountdown}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='z-[100] relative'>
+              <DropdownMenuLabel>Countdown</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setCurrentCountdown(Countdown.Seconds_15)}>15s</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setCurrentCountdown(Countdown.Seconds_30)}>30s</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setCurrentCountdown(Countdown.Seconds_60)}>60s</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         <div onClick={handleInputFieldRef} className={`text-white text-center text-4xl text-box-inner ${isInputFocused ? '' : 'blurred'}`} id='text-box-inner'>
           {isLoaded()}
-
         </div>
         {isInputFocused ? (<></>) : (
-          <div className="fade-in text-center text-xl font-bold h-0 top-[40%] z-[999] absolute w-full select-none pointer-events-none flex gap-4 justify-center">
+          <div className="fade-in text-center text-xl font-bold h-0 top-[40%] z-[50] absolute w-full select-none pointer-events-none flex gap-4 justify-center">
             <FontAwesomeIcon icon={faArrowPointer} />
             Click to focus
           </div>)

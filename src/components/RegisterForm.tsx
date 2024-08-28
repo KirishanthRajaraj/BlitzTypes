@@ -120,6 +120,7 @@ export function RegisterForm() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
+                                autoComplete="new-password"
                             />
                             {pwIdentical ? null : (<span className="text-xs text-red-700">Passwords do not match</span>)}
                             {registrationErrors.length > 0 && (
@@ -142,6 +143,7 @@ export function RegisterForm() {
                                 value={confirmPw}
                                 onChange={(e) => setConfirmPw(e.target.value)}
                                 required
+                                autoComplete="new-password"
                             />
                         </div>
                         <Button type="submit" className="w-full">

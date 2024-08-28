@@ -1,6 +1,8 @@
 'use client'
 
-import { faList, faRightFromBracket, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faList, faRightFromBracket, faUser as faUserSolid } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-regular-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import Cookies from 'js-cookie';
@@ -24,12 +26,12 @@ export const Navigation = ({ className = '' }) => {
   const { setData, data } = useAppContext();
 
   useEffect(() => {
+    isUserAuthenticated();
     getUser();
   }, []);
 
   useEffect(() => {
     setData({ language: language });
-
   }, [language]);
 
   const logoutUser = async () => {
@@ -39,6 +41,28 @@ export const Navigation = ({ className = '' }) => {
       location.reload();
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  const isUserAuthenticated = async () => {
+    try {
+      let res = await Auth.isAuthenicated();
+      setIsAuthenticated(true);
+
+    } catch (error) {
+
+      try {
+
+        await Auth.getToken();
+        await isUserAuthenticated();
+
+      } catch (error) {
+        router.push("/login");
+        console.log(error);
+        setIsAuthenticated(false);
+      }
+
+      console.error(error);
     }
   }
 
@@ -73,29 +97,24 @@ export const Navigation = ({ className = '' }) => {
             height={500}
             alt="logo" />
         </Link>
-        <div className={`flex items-center space-x-4 relative justify-end`}>
-          <Link href="/leaderboard">
-            <FontAwesomeIcon icon={faList} />
-          </Link>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="ghost">{language}</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Languages</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setLanguage(Language.English)}>English</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setLanguage(Language.German)}>German (Switzerland)</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className={`${data.isStartedTyping ? ' opacity-0' : 'opacity-100'} transition-opacity ease-in-out duration-300 flex items-center space-x-4 relative justify-end`}>
+          <Button className='w-auto' variant='ghost'>
+            <Link href="/leaderboard">
+              <FontAwesomeIcon icon={faList} />
+            </Link>
+          </Button>
+          
           <Separator orientation="vertical" className="h-12" />
           <Link href={authLink}>
-            <FontAwesomeIcon icon={faUser} />
+            {isAuthenticated ? (
+              <FontAwesomeIcon icon={faUserSolid} />
+            ) : (<FontAwesomeIcon icon={faUser} />)}
           </Link>
-          <Button className='w-auto' variant='ghost' onClick={logoutUser}>
-            <FontAwesomeIcon icon={faRightFromBracket} />
-          </Button>
+          {isAuthenticated ? (
+            <Button className='w-auto' aria-label="logout" variant='ghost' onClick={logoutUser}>
+              <FontAwesomeIcon icon={faRightFromBracket} />
+            </Button>
+          ) : (<></>)}
         </div>
       </div>
     </>
