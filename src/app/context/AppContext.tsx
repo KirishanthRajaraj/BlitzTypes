@@ -18,16 +18,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<Result>({currentTime: 1});
   const [token, setToken] = useState(Cookies.get('jwtToken') || '');
 
+
+
   const updateData = (newData: Partial<Result>) => {
+    console.log(newData);
     setData((prevData) => ({
       ...prevData,
       ...newData,
     }));
   };
-
-  useEffect(() => {
-    console.log(data);
-  }, [data])
   
   const saveToken = (newToken) => {
     Cookies.set('jwtToken', newToken, { expires: 1, secure: true, sameSite: 'Strict' });

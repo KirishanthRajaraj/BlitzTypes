@@ -17,6 +17,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Navigation } from "@/components/Navigation";
+import CookieBanner from "@/components/CookieBanner";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -41,6 +42,7 @@ export default function RootLayout({
               {children}
             </main>
             <Toaster />
+            <CookieBanner></CookieBanner>
           </AppProvider>
         </div>
       </body>

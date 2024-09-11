@@ -20,6 +20,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
 import { useAppContext } from "./context/AppContext";
+import { Countdown } from "@/enums/countdown";
 
 export default function Home() {
   const [inputWordsArr, setInputWordsArr] = useState<Array<WordsInChars>>([])
@@ -38,20 +39,30 @@ export default function Home() {
 
   useEffect(() => {
     if (inputWordsArr.length > 0) {
-      setIsStartedTyping(true);
-      setData({isStartedTyping: true});
+        setIsStartedTyping(true);
+        
+        console.log(true);
     } else {
-      setIsStartedTyping(false);
-      setData({isStartedTyping: false});
+        setIsStartedTyping(false);
+        console.log(false);
+
     }
   }, [inputWordsArr]);
+
+  useEffect(() => {
+    console.log('changed', isStartedTyping);
+  }, [isStartedTyping]);
 
   useEffect(() => {
     setData({ language: language });
   }, [language]);
 
   useEffect(() => {
-    setData({ typingTime: data.typingTime });
+    setData({ typingTime: Countdown.Seconds_15 });
+  }, []);
+
+  useEffect(() => {
+    setData({ typingTime: Countdown.Seconds_15 });
   }, []);
 
   const isUserAuthenticated = async () => {

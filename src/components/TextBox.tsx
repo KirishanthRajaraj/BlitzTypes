@@ -74,8 +74,9 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
     getWords();
   }, [currentLanguage])
 
+  // for testing
   useEffect(() => {
-    console.log("input focus changed");
+    setIsInputFocused(true);
   }, [isInputFocused])
 
   useEffect(() => {
@@ -120,6 +121,8 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
     getWords();
 
   }, [])
+
+
 
   /* for debugging 
   
@@ -427,6 +430,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
         default:
           cd = 15;
       }
+      
       setData({ typingTime: cd, isStartedTyping: false });
     }
   }
@@ -501,7 +505,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
           </div>)
         }
         <div onClick={handleInputFieldRef} className={`w-full text-center py-10 ${isInputFocused ? '' : 'blurred'}`}>
-          <Link href="/" onInput={getWords} onKeyDown={handleRestart}><Button onClick={getWords} variant="ghost" color='dark'><FontAwesomeIcon size='2x' icon={faRotateRight} /></Button></Link>
+          <Link href="/" onInput={getWords} onClick={handleRestart} onKeyDown={handleRestart}><Button onClick={getWords} variant="ghost" color='dark'><FontAwesomeIcon size='2x' icon={faRotateRight} /></Button></Link>
         </div>
       </div>
     </>

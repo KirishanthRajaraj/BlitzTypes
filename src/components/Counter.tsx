@@ -29,10 +29,16 @@ const Counter: React.FC<Props> = ({ CountDownAt, isStartedTyping, setTimerFinish
 
     useEffect(() => {
         setCount(data.typingTime);
+    }, [data.isStartedTyping]);
+
+    useEffect(() => {
+        setCount(data.typingTime);
     }, [data.typingTime]);
 
     useEffect(() => {
-        if (count > 0 && data.isStartedTyping === true) {
+
+        if (count > 0 && data.isStartedTyping) {
+
             setData({ isStartedTyping: true });
             const interval = setInterval(() => {
                 setCount(prevCount => prevCount - 1);
