@@ -29,13 +29,15 @@ const Counter: React.FC<Props> = ({ CountDownAt, isStartedTyping, setTimerFinish
 
     useEffect(() => {
         setCount(data.typingTime);
-    }, [data.isStartedTyping]);
+    }, [data.typingTime, data.isStartedTyping]);
 
     useEffect(() => {
-        setCount(data.typingTime);
-    }, [data.typingTime]);
+        console.log(count);
+    }, [count]);
 
     useEffect(() => {
+        console.log(count);
+        console.log(isStartedTyping);
 
         if (count > 0 && data.isStartedTyping) {
 
@@ -50,7 +52,7 @@ const Counter: React.FC<Props> = ({ CountDownAt, isStartedTyping, setTimerFinish
         if (count <= 0) {
             sendTimerFinished();
         }
-    }, [count, isStartedTyping]);
+    }, [count, data.isStartedTyping]);
 
     const sendTimerFinished = () => {
         router.push('/evaluation');

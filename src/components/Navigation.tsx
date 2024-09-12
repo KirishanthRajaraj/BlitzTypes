@@ -27,7 +27,6 @@ export const Navigation = ({ className = '' }) => {
 
   useEffect(() => {
     isUserAuthenticated();
-    getUser();
   }, []);
 
   useEffect(() => {
@@ -48,14 +47,10 @@ export const Navigation = ({ className = '' }) => {
     try {
       let res = await Auth.isAuthenicated();
       setIsAuthenticated(true);
-
     } catch (error) {
-
       try {
-
         await Auth.getToken();
         await isUserAuthenticated();
-
       } catch (error) {
         router.push("/login");
         console.log(error);
@@ -63,27 +58,6 @@ export const Navigation = ({ className = '' }) => {
       }
 
       console.error(error);
-    }
-  }
-
-  const getUser = async () => {
-    let userRes: any;
-    try {
-      setAuthLink('/login');
-      const token = Cookies.get('jwtToken');
-      userRes = await User.getUser();
-      setUsername(userRes.data.userName);
-      if (userRes.data.request.status === 200 || userRes.data.request.status === 201) {
-        setIsAuthenticated(true);
-        setAuthLink('/profile');
-      } else {
-        setIsAuthenticated(false);
-        router.push('/login');
-      }
-
-    } catch (error) {
-      setAuthLink('/login');
-      console.log(error);
     }
   }
 
@@ -120,7 +94,3 @@ export const Navigation = ({ className = '' }) => {
     </>
   )
 }
-function setUsername(userName: any) {
-  throw new Error("Function not implemented.");
-}
-

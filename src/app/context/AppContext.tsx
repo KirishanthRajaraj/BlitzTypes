@@ -21,7 +21,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
 
   const updateData = (newData: Partial<Result>) => {
-    console.log(newData);
     setData((prevData) => ({
       ...prevData,
       ...newData,

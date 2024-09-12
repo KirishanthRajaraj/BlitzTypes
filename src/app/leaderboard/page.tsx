@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { toast } from '@/components/ui/use-toast';
 
 export default function Login() {
   const [candidates, setCandidates] = useState([]);
@@ -25,8 +26,14 @@ export default function Login() {
     let res: any;
     try {
       res = await Leaderboard.getAllCandidates();
+      console.log(res);
       setCandidates(res.data);
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error fetching Leaderboard Candidates",
+        description: error.response.data.error,
+      })
       console.log(error);
     }
     return res.data;

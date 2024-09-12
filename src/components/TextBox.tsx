@@ -59,7 +59,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   }, [])
 
   useEffect(() => {
-    setData({typingTime: currentCountdown})
+    setData({ typingTime: currentCountdown })
   }, [currentCountdown])
 
   useEffect(() => {
@@ -73,11 +73,6 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   useEffect(() => {
     getWords();
   }, [currentLanguage])
-
-  // for testing
-  useEffect(() => {
-    setIsInputFocused(true);
-  }, [isInputFocused])
 
   useEffect(() => {
     setCurrentLanguage(data.language);
@@ -122,17 +117,6 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   }, [])
 
-
-
-  /* for debugging 
-  
-    useEffect(() => {
-      if (data?.currentTime !== undefined) {
-        console.log(data.currentTime);
-      }
-    }, [data.currentTime])
-  */
-
   useEffect(() => {
     assertInputText();
     moveCurrentCursor();
@@ -155,7 +139,11 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   }, [allWordsInChars])
 
   const handleAnyKeyPressed = () => {
-    textFieldRef.current.focus();
+    if (textFieldRef) {
+      if (textFieldRef.current) {
+        textFieldRef.current.focus();
+      }
+    }
   }
 
   const sendAllWordsArr = (wordsArr: Array<WordsInChars>) => {
@@ -430,7 +418,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
         default:
           cd = 15;
       }
-      
+
       setData({ typingTime: cd, isStartedTyping: false });
     }
   }
@@ -495,7 +483,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
           </DropdownMenu>
         </div>
 
-        <div onClick={handleInputFieldRef} className={`text-white text-center text-4xl text-box-inner ${isInputFocused ? '' : 'blurred'}`} id='text-box-inner'>
+        <div onClick={handleInputFieldRef} className={`text-white text-center text-4xl text-box-inner duration-150 ${isInputFocused ? '' : 'blurred'}`} id='text-box-inner'>
           {isLoaded()}
         </div>
         {isInputFocused ? (<></>) : (
@@ -504,7 +492,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
             Click to focus
           </div>)
         }
-        <div onClick={handleInputFieldRef} className={`w-full text-center py-10 ${isInputFocused ? '' : 'blurred'}`}>
+        <div onClick={handleInputFieldRef} className={`duration-150 w-full text-center py-10 ${isInputFocused ? '' : 'blurred'}`}>
           <Link href="/" onInput={getWords} onClick={handleRestart} onKeyDown={handleRestart}><Button onClick={getWords} variant="ghost" color='dark'><FontAwesomeIcon size='2x' icon={faRotateRight} /></Button></Link>
         </div>
       </div>

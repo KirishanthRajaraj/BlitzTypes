@@ -107,7 +107,7 @@ span.currentCharPrev {
 }
 
 .fade-in {
-  animation: fadeIn 0.15s normal;
+  animation: fadeIn 0.2s normal;
 }
 
 .blurred {

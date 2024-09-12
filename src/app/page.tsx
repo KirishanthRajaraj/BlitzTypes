@@ -39,27 +39,18 @@ export default function Home() {
 
   useEffect(() => {
     if (inputWordsArr.length > 0) {
-        setIsStartedTyping(true);
-        
-        console.log(true);
+      console.log("startedTyping");
+      setData({ isStartedTyping: true });
+      setIsStartedTyping(true);
     } else {
-        setIsStartedTyping(false);
-        console.log(false);
-
+      setData({ isStartedTyping: false });
+      setIsStartedTyping(false);
     }
   }, [inputWordsArr]);
 
   useEffect(() => {
-    console.log('changed', isStartedTyping);
-  }, [isStartedTyping]);
-
-  useEffect(() => {
     setData({ language: language });
   }, [language]);
-
-  useEffect(() => {
-    setData({ typingTime: Countdown.Seconds_15 });
-  }, []);
 
   useEffect(() => {
     setData({ typingTime: Countdown.Seconds_15 });
