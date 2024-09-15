@@ -47,7 +47,7 @@ export default function PrivacyPolicy() {
                 <li>Authenticate users and maintain secure sessions</li>
                 <li>Analyze traffic via Google Analytics</li>
             </ul>
-            <p className='mb-3'>For more information on how Google uses your data, please refer to Google's Privacy Policy.</p>
+            <p className='mb-3'>For more information on how Google uses your data, please refer to Google&apos;s Privacy Policy.</p>
             <p className='mb-3'>You can manage or delete cookies through your browser settings. Disabling cookies may affect your ability to use certain features of the Site.</p>
 
             <h2 className='text-3xl font-bold  mb-3'>7. Data Sharing</h2>
@@ -62,7 +62,7 @@ export default function PrivacyPolicy() {
             <ul className='mb-3'>
                 <li>Log Data: Retained for a year to monitor and improve site functionality.</li>
                 <li>Leaderboard Data: Retained as long as you consent to its display.</li>
-                <li>Google Analytics Data: Retained according to Google’s policies.</li>
+                <li>Google Analytics Data: Retained according to Google&apos;s policies.</li>
             </ul>
 
             <h2 className='text-3xl font-bold  mb-3'>9. Data Security</h2>
