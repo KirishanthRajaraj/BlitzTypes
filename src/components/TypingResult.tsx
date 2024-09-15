@@ -42,7 +42,7 @@ const TypingResult = () => {
                 }
             });
             let wordsPerMin = (correctWordsAmount / data.typingTime) * 60;
-
+            
             return wordsPerMin;
         }
     }
@@ -50,6 +50,13 @@ const TypingResult = () => {
     const calcCorrectTypingPercentage = () => {
         if (data && data.finalWords && data.typingTime) {
             data.finalWords.forEach(word => {
+                console.log(word);
+                let wordIsTyped = false;
+                word.chars.forEach(char => {
+                    if(char.isTyped){
+                        wordIsTyped = true;
+                    }
+                });
                 word.chars.forEach(char => {
 
                     if (char.isCorrect) {
@@ -63,8 +70,8 @@ const TypingResult = () => {
                     if (char.isTyped) {
                         amountTyped++;
                     }
-
-                    if (word.isTyped && !char.isTyped) {
+       
+                    if (wordIsTyped && !char.isTyped) {
                         missedChars++;
                     }
 
@@ -77,7 +84,7 @@ const TypingResult = () => {
             return percentageCorrect;
         }
     }
-
+    
     function calculateConsistency(numbers): number {
 
         if (numbers === undefined) {
@@ -163,14 +170,13 @@ const TypingResult = () => {
         } else {
             setIsLoading(false);
         }
-        setWPMHighscore();
+        submitTypingResult();
     }, []);
 
-    const setWPMHighscore = async () => {
+    const submitTypingResult = async () => {
         let res: any;
         try {
-            const token = Cookies.get('jwtToken');
-            res = await Evaluation.setWPMHighscore(typingSpeed, token);
+            res = await Evaluation.submitTypingResult(typingSpeed, data.typingTime);
             setIsAuthenticated(true);
         } catch (error) {
             setIsAuthenticated(false);
@@ -184,9 +190,9 @@ const TypingResult = () => {
         ) : (
             <>
 
-                <div className='grid gap-12'>
+                <div className='grid sm:gap-12 gap-8'>
 
-                    <div className='flex gap-4'>
+                    <div className='flex flex-wrap gap-4'>
                         <div className='grid flex-1 gap-4'>
 
                             <div className='flex flex-1 gap-4'>
@@ -269,17 +275,17 @@ const TypingResult = () => {
                                                 data={[
                                                     {
                                                         activity: "stand",
-                                                        value: (8 / 12) * 100,
+                                                        value: (missedChars / (missedChars + incorrectCharAmount + correctCharAmount)) * 100,
                                                         fill: "var(--color-stand)",
                                                     },
                                                     {
                                                         activity: "exercise",
-                                                        value: (46 / 60) * 100,
+                                                        value: (incorrectCharAmount / (missedChars + incorrectCharAmount + correctCharAmount)) * 100,
                                                         fill: "var(--color-exercise)",
                                                     },
                                                     {
                                                         activity: "move",
-                                                        value: (245 / 360) * 100,
+                                                        value: (correctCharAmount / (missedChars + incorrectCharAmount + correctCharAmount)) * 100,
                                                         fill: "var(--color-move)",
                                                     },
                                                 ]}
@@ -335,7 +341,7 @@ const TypingResult = () => {
                         </div>
                     </div>
 
-                    <div className='flex gap-4'>
+                    <div className='flex flex-wrap gap-4'>
 
                         <Card className='flex-1'>
                             <CardHeader>

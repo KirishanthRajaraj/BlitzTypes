@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { Navigation } from "@/components/Navigation";
 import CookieBanner from "@/components/CookieBanner";
+import Footer from "@/components/Footer";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -34,13 +35,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
-        <div className={`${inter.className} flex min-h-screen flex-col py-24 pt-12  max-w-[1320px] mx-auto px-8`}>
+      <body className={`${inter.className} min-h-screen`}>
+        <div className={`${inter.className} flex min-h-screen justify-between flex-col py-12 pt-12  max-w-[1320px] mx-auto px-8`}>
           <AppProvider>
             <Navigation className="pb-12"></Navigation>
-            <main>
+            <main className="flex-grow flex flex-col justify-center">
               {children}
             </main>
+            <Footer></Footer>
             <Toaster />
             <CookieBanner></CookieBanner>
           </AppProvider>

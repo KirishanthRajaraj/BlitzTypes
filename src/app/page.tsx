@@ -39,7 +39,6 @@ export default function Home() {
 
   useEffect(() => {
     if (inputWordsArr.length > 0) {
-      console.log("startedTyping");
       setData({ isStartedTyping: true });
       setIsStartedTyping(true);
     } else {
@@ -69,7 +68,6 @@ export default function Home() {
 
       } catch (error) {
         // your are currently not logged in toast or so
-        router.push("/login")
         console.log(error);
         setIsAuthenticated(false);
       }

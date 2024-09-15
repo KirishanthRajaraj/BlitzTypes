@@ -1,21 +1,18 @@
 import * as React from "react";
 import axios from "axios";
 import { Language } from "@/enums/language";
+import { Countdown } from "@/enums/countdown";
 
-export const setWPMHighscore = (score: number, token: string) => {
+export const submitTypingResult = (score: number, typingTime: number) => {
     const data = {
         highScore: score,
     };
 
-    const headers: any = {
-        'Authorization': `Bearer ${token}`,
-    };
-
     return axios.post(
-        'https://localhost:7141/api/User/SetWPMHighscore',
-        { score: score },
+        'https://localhost:7141/api/User/submitTypingResult',
+        { score: score, typingTime: typingTime },
         {
-            params: { score: score },
+            params: { score: score, typingTime: typingTime },
             withCredentials: true
         },
     );

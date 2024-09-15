@@ -67,16 +67,8 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   }, [InputWords])
 
   useEffect(() => {
-    setCurrentLanguage(language);
-  }, [language])
-
-  useEffect(() => {
     getWords();
   }, [currentLanguage])
-
-  useEffect(() => {
-    setCurrentLanguage(data.language);
-  }, [data.language])
 
   useEffect(() => {
     const handleFocus = () => {
@@ -321,6 +313,8 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
             setAllWordsInChars(textboxcharsCopy);
           } else {
+            console.log(inputword.chars[j].char);
+            console.log(textboxchars.chars[j].char);
 
             setIsCorrect(false);
             textboxchars.isCorrect = isCorrect;
@@ -455,17 +449,17 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   return (
     <>
-      <div ref={textboxRef} className='container h-full min-h-[calc(68vh)] flex flex-col align-center items-center text-box justify-center relative gap-16'>
+      <div ref={textboxRef} className='container h-full min-h-[calc(60vh-2rem)] flex flex-col align-center items-center text-box justify-center relative gap-16'>
         <div className='flex items-center'>
           <DropdownMenu>
             <DropdownMenuTrigger tabIndex={1} className={`${data.isStartedTyping ? 'opacity-0 hidden' : 'opacity-100'} transition-opacity ease-in-out duration-300 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2`}>
-              {language}
+              {currentLanguage}
             </DropdownMenuTrigger>
             <DropdownMenuContent className='z-[100] relative'>
               <DropdownMenuLabel>Languages</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setCurrentLanguage(Language.English)}>English</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setCurrentLanguage(Language.German)}>German (Switzerland)</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setCurrentLanguage(Language.German)}>German</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Separator orientation="vertical" className={`${data.isStartedTyping ? ' opacity-0' : 'opacity-100'} transition-opacity ease-in-out duration-300 h-8`}></Separator>

@@ -32,13 +32,6 @@ const Counter: React.FC<Props> = ({ CountDownAt, isStartedTyping, setTimerFinish
     }, [data.typingTime, data.isStartedTyping]);
 
     useEffect(() => {
-        console.log(count);
-    }, [count]);
-
-    useEffect(() => {
-        console.log(count);
-        console.log(isStartedTyping);
-
         if (count > 0 && data.isStartedTyping) {
 
             setData({ isStartedTyping: true });

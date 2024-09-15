@@ -21,23 +21,6 @@ export const UserProfile = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
-  // properties to show
-  /*
-    username
-    joined at
-    amount of tests started
-    amount of seconds or hours or min typed
-    edit bio?
-    ----
-    change username as option, maybe with request?
-    ----
-    preferred language
-    preferred typing speed
-    highscore (in every category?)
-    date of highscore set?
-    
-  */
-
   useEffect(() => {
     getUserRanking();
   }, [candidates]);
@@ -141,14 +124,20 @@ export const UserProfile = () => {
                         </div>
                       </div>
 
-                      <div className="flex gap-12 items-end">
-                        <div className='flex flex-col gap-2'>
+                      <div className="flex flex-wrap gap-x-12 items-end">
+                        <div className='flex flex-col gap-4'>
                           <span className='opacity-60'>Ranking </span>
-                          <span className=' text-4xl font-bold'>{userRank ? `#${userRank}` : "-"}</span>
+                          <span className={`${userRank ? 'text-4xl' : ''} font-bold`}>
+                            {userRank ? `#${userRank}` : '-'}
+                          </span>
                         </div>
                         <div className='flex flex-col gap-4'>
                           <span className='opacity-60'>Join Date</span>
-                          <span className='font-bold'>{new Date(user.joinedDate).toLocaleDateString('en-GB').replace(/\//g, '.')}</span>
+                          <span className="font-bold">
+                            {user.joinedDate
+                              ? new Date(user.joinedDate).toLocaleDateString('en-GB').replace(/\//g, '.')
+                              : '-'}
+                          </span>
                         </div>
                         <div className='flex flex-col gap-4'>
                           <span className='opacity-60'>Email</span>

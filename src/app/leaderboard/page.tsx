@@ -26,7 +26,7 @@ export default function Login() {
     let res: any;
     try {
       res = await Leaderboard.getAllCandidates();
-      console.log(res);
+      console.log(res.data);
       setCandidates(res.data);
     } catch (error) {
       toast({
@@ -58,8 +58,6 @@ export default function Login() {
             </TableRow>
           ))}
         </TableBody>
-
-        <TableCaption>&copy; Blitztypes 2024</TableCaption>
 
       </Table>
 

@@ -52,7 +52,6 @@ export const Navigation = ({ className = '' }) => {
         await Auth.getToken();
         await isUserAuthenticated();
       } catch (error) {
-        router.push("/login");
         console.log(error);
         setIsAuthenticated(false);
       }
@@ -72,14 +71,15 @@ export const Navigation = ({ className = '' }) => {
             alt="logo" />
         </Link>
         <div className={`${data.isStartedTyping ? ' opacity-0' : 'opacity-100'} transition-opacity ease-in-out duration-300 flex items-center space-x-4 relative justify-end`}>
-          <Button className='w-auto' variant='ghost'>
-            <Link href="/leaderboard">
+          <Link href="/leaderboard">
+            <Button className='w-auto' variant='ghost'>
               <FontAwesomeIcon icon={faList} />
-            </Link>
-          </Button>
-          
+            </Button>
+          </Link>
+
+
           <Separator orientation="vertical" className="h-12" />
-          <Link href={authLink}>
+          <Link href={"/profile"}>
             {isAuthenticated ? (
               <FontAwesomeIcon icon={faUserSolid} />
             ) : (<FontAwesomeIcon icon={faUser} />)}
