@@ -5,7 +5,7 @@ export default function PrivacyPolicy() {
         <>
             <h1 className='text-6xl font-black mb-8'>Privacy Policy</h1>
             <h2 className='text-3xl font-bold mb-3 mt'>1. Introduction</h2>
-            <p className='mb-3'>We value your privacy and are committed to protecting your personal data. This privacy policy explains how we collect, use, and protect your personal data when you use our website. It also informs you of your rights under the General Data Protection Regulation (GDPR) and the Swiss Federal Act on Data Protection (FADP).</p>
+            <p className='mb-3'>We value your privacy and are committed to protecting your personal data. This privacy policy explains how we collect, use and protect your personal data when you use our website. It also informs you of your rights under the General Data Protection Regulation (GDPR) and the Swiss Federal Act on Data Protection (FADP).</p>
 
             <h2 className='text-3xl font-bold  mb-3'>3. Data We Collect</h2>
             <p className='mb-3'>We may collect and process the following types of personal data:</p>
