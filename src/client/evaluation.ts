@@ -9,7 +9,7 @@ export const submitTypingResult = (score: number, typingTime: number) => {
     };
 
     return axios.post(
-        'https://localhost:7141/api/User/submitTypingResult',
+        'https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/api/User/submitTypingResult',
         { score: score, typingTime: typingTime },
         {
             params: { score: score, typingTime: typingTime },
