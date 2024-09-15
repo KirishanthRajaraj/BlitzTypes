@@ -28,7 +28,7 @@ export default function PrivacyPolicy() {
             <p className='mb-3'>We use your personal data for the following purposes:</p>
             <ul className='mb-3'>
                 <li>Authentication and Security: Cookies help me recognize you and manage your login sessions.</li>
-                <li>Service Improvement: Logging user activity allows me to maintain and improve the website’s functionality.</li>
+                <li>Service Improvement: Logging user activity allows me to maintain and improve the website&apos;s functionality.</li>
                 <li>Leaderboard Display: We display usernames publicly on the leaderboard with your explicit permission.</li>
                 <li>Traffic Analysis: Google Analytics helps me understand user behavior and improve the website experience.</li>
             </ul>
