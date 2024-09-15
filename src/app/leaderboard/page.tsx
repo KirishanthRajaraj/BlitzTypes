@@ -61,6 +61,10 @@ export default function Login() {
 
       </Table>
 
+      <p className='text-sm mt-12 text-muted-foreground'>
+        Want to appear in the leaderboards? Register <a href='/register' className='underline hover:text-white duration-300'>here</a> and start typing
+      </p>
+
     </>
   )
 }
