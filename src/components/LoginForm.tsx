@@ -84,7 +84,7 @@ export function LoginForm() {
     async function loginWithGoogle() {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = 'https://localhost:7141/api/Authentication/ExternalLogin?provider=Google&returnUrl=https://localhost:3000/profile';
+        form.action = 'https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/api/Authentication/ExternalLogin?provider=Google&returnUrl=https://blitz-types.vercel.app/profile';
         document.body.appendChild(form);
         form.submit();
     }
