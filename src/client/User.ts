@@ -3,8 +3,10 @@ import axios from "axios";
 import { Language } from "@/enums/language";
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const getUser = async () => {
-    return axios.get("https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/api/User/getCurrentUser", {
+    return axios.get(`${API_URL}/User/getCurrentUser`, {
         withCredentials: true
     });
 }

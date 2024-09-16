@@ -4,12 +4,15 @@ import { Language } from "@/enums/language";
 import { Countdown } from "@/enums/countdown";
 
 export const submitTypingResult = (score: number, typingTime: number) => {
+
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
     const data = {
         highScore: score,
     };
 
     return axios.post(
-        'https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/api/User/submitTypingResult',
+        `${API_URL}/User/submitTypingResult`,
         { score: score, typingTime: typingTime },
         {
             params: { score: score, typingTime: typingTime },

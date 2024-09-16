@@ -2,8 +2,10 @@ import * as React from "react";
 import axios from "axios";
 import { Language } from "@/enums/language";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const getAllWords = (language: Language) => {
-    return axios.get("https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/api/Words/GetAllWords", {
+    return axios.get(`${API_URL}/Words/GetAllWords`, {
         params: {
             language: language
         }
@@ -11,7 +13,7 @@ export const getAllWords = (language: Language) => {
 }
 
 export const getWords = (language: Language, toSkip: number, toTake: number) => {
-    return axios.get("https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/api/Words/GetWords", {
+    return axios.get(`${API_URL}/Words/GetWords`, {
         params: {
             language: language,
             toSkip,

@@ -3,9 +3,10 @@ import axios from "axios";
 import { Language } from "@/enums/language";
 
 axios.defaults.withCredentials = true;
-
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+console.log(API_URL);
 export const login = (username, password, rememberMe) => {
-    return axios.post("https://localhost:7141/api/Authentication/login", {
+        return axios.post(`${API_URL}/Authentication/login`, {
         Username: username,
         Password: password,
         RememberMe: rememberMe
@@ -14,8 +15,8 @@ export const login = (username, password, rememberMe) => {
     });
 }
 
-export const register = (username, email, password) => {
-    return axios.post("https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/api/Authentication/register", {
+export const register = (username, email, password) => { 
+        return axios.post(`${API_URL}/Authentication/register`, {
         Username: username,
         Email: email,
         Password: password,
@@ -23,22 +24,15 @@ export const register = (username, email, password) => {
 }
 
 export const isAuthenicated = () => {
-    return axios.get("https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/api/Authentication/isAuthenticated");
+    return axios.get(`${API_URL}/Authentication/isAuthenticated`);
 }
 
 export const getToken = () => {
-    return axios.post("https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/Authentication/getToken", {
+    return axios.post(`${API_URL}/Authentication/getToken`, {
         withCredentials: true
     });
 }
 
-export const getTokenFetch = () => {
-    return fetch("https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/Authentication/getToken", {
-        method: 'POST',
-        credentials: 'include',
-    });
-}
-
 export const logout = () => {
-    return axios.post("https://blitztypes-gnb3fehseygja5ad.westeurope-01.azurewebsites.net/Authentication/logout");
+    return axios.post(`${API_URL}/Authentication/logout`);
 }

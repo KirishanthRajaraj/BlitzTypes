@@ -53,6 +53,8 @@ export function LoginForm() {
         try {
             let res = await Auth.isAuthenicated();
             setIsAuthenticated(true);
+            console.log(res);
+
         } catch (error) {
 
             try {
@@ -64,8 +66,17 @@ export function LoginForm() {
             } catch (error) {
                 setIsLoading(false);
                 setIsAuthenticated(false);
+                toast({
+                    variant: "destructive",
+                    title: "Login failed",
+                    description: error.response.data.error,
+                })
             }
-
+            toast({
+                variant: "destructive",
+                title: "Login failed",
+                description: error.response.data.error,
+            })
             console.error(error);
         }
     }
