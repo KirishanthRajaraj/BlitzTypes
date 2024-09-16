@@ -67,7 +67,7 @@ export const Navigation = ({ className = '' }) => {
           <Image
             src="/logo.png"
             width={60}
-            height={500}
+            height={95}
             alt="logo" />
         </Link>
         <div className={`${data.isStartedTyping ? ' opacity-0' : 'opacity-100'} transition-opacity ease-in-out duration-300 flex items-center space-x-4 relative justify-end`}>
