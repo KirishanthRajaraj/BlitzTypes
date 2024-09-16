@@ -19,7 +19,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Navigation } from "@/components/Navigation";
 import CookieBanner from "@/components/CookieBanner";
 import Footer from "@/components/Footer";
-
+import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Google Analytics Script */}
+        <Script 
+          src="https://www.googletagmanager.com/gtag/js?id=G-XB9GWM2LC7" 
+          strategy="afterInteractive" 
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XB9GWM2LC7');
+          `}
+        </Script>
+      </head>
       <body className={`${inter.className} min-h-screen`}>
         <div className={`${inter.className} flex min-h-screen justify-between flex-col py-12 pt-12  max-w-[1320px] mx-auto px-8`}>
           <AppProvider>
