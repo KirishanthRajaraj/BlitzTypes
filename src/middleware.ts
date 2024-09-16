@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getUser } from './client/User';
-import { getTokenFetch } from './client/Authentication';
 
 const protectedRoutes = ['/profile']
 const authRoutes = ['/login', '/register']
