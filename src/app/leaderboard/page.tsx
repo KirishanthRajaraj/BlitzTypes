@@ -63,7 +63,7 @@ export default function Login() {
 
                   {candidate.title && (
                     <div
-                      className={`text-sm bg-clip-text text-transparent ${candidate.titleStyles}`}
+                      className={`${candidate.titleStyles}`}
                     >                    
                     {candidate.title}
                     </div>

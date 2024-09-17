@@ -10,6 +10,21 @@ const config = {
     "./src/**/*.{ts,tsx}",
     "./node_modules/@nextui-org/theme/dist/components/[object Object].js"
   ],
+  safelist: [
+    'bg-gradient-to-r', 
+    'from-black', 
+    'to-yellow-500', 
+    'from-red-500', 
+    'via-yellow-500', 
+    'to-green-500', 
+    'from-green-800', 
+    'via-yellow-600', 
+    'via-orange-500', 
+    'via-purple-700', 
+    'to-brown-800', 
+    'bg-clip-text', 
+    'text-transparent'
+  ],
   prefix: "",
   theme: {
     container: {
