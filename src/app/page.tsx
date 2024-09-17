@@ -52,6 +52,10 @@ export default function Home() {
   }, [language]);
 
   useEffect(() => {
+    isUserAuthenticated();
+  }, [isStartedTyping]);
+
+  useEffect(() => {
     setData({ typingTime: Countdown.Seconds_15 });
   }, []);
 

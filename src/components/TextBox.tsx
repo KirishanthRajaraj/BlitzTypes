@@ -105,9 +105,10 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   }, []);
 
   useEffect(() => {
+    setPreferredLanguage();
+
     getWords();
 
-    setPreferredLanguage();
   }, [])
 
   useEffect(() => {
@@ -133,7 +134,6 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   const setPreferredLanguage = () => {
         const savedLanguage = localStorage.getItem('preferredLanguage');
-
         if (savedLanguage !== null) {
           setCurrentLanguage(savedLanguage as Language);
         }
@@ -222,7 +222,6 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
         setIsFetchingData(false);
         isNewLine(0);
         setToSkip(prevToSkip => prevToSkip + toTake);
-        setPreferredLanguage();
       });
   };
 
