@@ -53,8 +53,27 @@ export default function Login() {
         <TableBody>
           {candidates.map((candidate, index) => (
             <TableRow key={index}>
-              <TableCell className="font-medium">{candidate.userName}</TableCell>
-              <TableCell>{candidate.highScoreWPM} <span className='text-xs text-muted-foreground'>wpm</span></TableCell>
+              <TableCell className="font-medium">
+
+
+                <div className='flex flex-col align-end '>
+                  <div className='text-lg'>
+                    {candidate.userName}
+                  </div>
+
+                  {candidate.title && (
+                    <div
+                      className={`text-sm bg-clip-text text-transparent ${candidate.titleStyles}`}
+                    >                    
+                    {candidate.title}
+                    </div>
+                  )}
+
+                </div>
+              </TableCell>
+              <TableCell>
+                {candidate.highScoreWPM} <span className='text-xs text-muted-foreground'>wpm</span>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
