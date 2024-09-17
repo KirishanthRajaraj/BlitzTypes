@@ -23,7 +23,10 @@ const config = {
     'via-purple-700', 
     'to-brown-800', 
     'bg-clip-text', 
-    'text-transparent'
+    'text-transparent',
+    'from-blue-500', 
+    'via-red-500', 
+    'to-yellow-400'
   ],
   prefix: "",
   theme: {

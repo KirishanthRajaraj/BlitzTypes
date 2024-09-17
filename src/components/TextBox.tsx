@@ -106,7 +106,13 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   useEffect(() => {
     getWords();
+    //set preferred language
+    const savedLanguage = localStorage.getItem('preferredLanguage');
 
+    if (savedLanguage !== null) {
+      setCurrentLanguage(savedLanguage as Language);
+    }
+    localStorage.getItem('preferredLanguage')
   }, [])
 
   useEffect(() => {
@@ -395,7 +401,8 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   };
 
   const handleRestart = (event) => {
-    if (event.key === 'Enter') {
+    console.log(event);
+    if (event.key === 'Enter'  || event.type === 'click') {
       getWords();
       if (textFieldRef.current) {
         textFieldRef.current.value = "";
@@ -415,6 +422,11 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
       setData({ typingTime: cd, isStartedTyping: false });
     }
+  }
+
+  const handleLanguageChange = (changedLanguage: Language) => {
+    setCurrentLanguage(changedLanguage);
+    localStorage.setItem('preferredLanguage', changedLanguage);
   }
 
   // todo later
@@ -458,8 +470,8 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
             <DropdownMenuContent className='z-[100] relative'>
               <DropdownMenuLabel>Languages</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setCurrentLanguage(Language.English)}>English</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setCurrentLanguage(Language.German)}>German</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleLanguageChange(Language.English)}>English</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleLanguageChange(Language.German)}>German</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Separator orientation="vertical" className={`${data.isStartedTyping ? ' opacity-0' : 'opacity-100'} transition-opacity ease-in-out duration-300 h-8`}></Separator>

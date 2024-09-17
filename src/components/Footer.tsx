@@ -18,7 +18,7 @@ const Footer = () => {
                 <div className='flex-grow flex justify-center'>
                     <span className="text-sm text-muted-foreground">© Blitztypes 2024</span>
                 </div>
-                <span className='text-sm '>v1.0.0</span>
+                <span className='text-sm '>v1.0.1</span>
             </footer>
         </>
     )
