@@ -56,6 +56,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   useEffect(() => {
     textFieldRef.current.focus();
     moveCurrentCursor();
+    initialization();
   }, [])
 
   useEffect(() => {
@@ -65,10 +66,6 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   useEffect(() => {
     setInputWordsInChars(InputWords);
   }, [InputWords])
-
-  useEffect(() => {
-    getWords();
-  }, [currentLanguage])
 
   useEffect(() => {
     const handleFocus = () => {
@@ -105,10 +102,6 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   }, []);
 
   useEffect(() => {
-    initialization();
-  }, [])
-
-  useEffect(() => {
     assertInputText();
     moveCurrentCursor();
   }, [inputWordsInChars])
@@ -136,10 +129,8 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   const setPreferredLanguage = () => {
     const savedLanguage = localStorage.getItem('preferredLanguage');
     if (savedLanguage !== null) {
-      return new Promise<void>((resolve) => {
         setCurrentLanguage(savedLanguage as Language);
-        resolve();
-      });
+        getWords(savedLanguage as Language);
     }
     localStorage.getItem('preferredLanguage')
   }
@@ -210,11 +201,14 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
     isCurrentRowDeletable = false;
   }
 
-  const getWords = () => {
+  const getWords = (activeLanguage: Language = null) => {
     setAllWords([]);
     setAllWordsInChars([]);
     setIsFetchingData(true);
-    ClientTextBox.getWords(currentLanguage, toSkip, initialWordCount)
+    console.log(activeLanguage);
+    var lang = activeLanguage === null ? currentLanguage : activeLanguage
+
+    ClientTextBox.getWords(lang, toSkip, initialWordCount)
       .then((response) => {
         const words: Array<Words> = response.data.map((item: any) => ({
           id: item.id,
@@ -409,7 +403,6 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   };
 
   const handleRestart = (event) => {
-    console.log(event);
     if (event.key === 'Enter' || event.type === 'click') {
       getWords();
       if (textFieldRef.current) {
