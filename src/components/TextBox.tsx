@@ -122,6 +122,10 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
     sendAllWordsArr(allWordsInChars);
   }, [allWordsInChars])
 
+  useEffect(() => {
+    getWords();
+  }, [currentLanguage])
+
   const initialization = async () => {
     await setPreferredLanguage();
   }
