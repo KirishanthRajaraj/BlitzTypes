@@ -42,7 +42,7 @@ const TypingResult = () => {
                 }
             });
             let wordsPerMin = (correctWordsAmount / data.typingTime) * 60;
-            
+
             return wordsPerMin;
         }
     }
@@ -53,7 +53,7 @@ const TypingResult = () => {
                 console.log(word);
                 let wordIsTyped = false;
                 word.chars.forEach(char => {
-                    if(char.isTyped){
+                    if (char.isTyped) {
                         wordIsTyped = true;
                     }
                 });
@@ -70,7 +70,7 @@ const TypingResult = () => {
                     if (char.isTyped) {
                         amountTyped++;
                     }
-       
+
                     if (wordIsTyped && !char.isTyped) {
                         missedChars++;
                     }
@@ -84,7 +84,7 @@ const TypingResult = () => {
             return percentageCorrect;
         }
     }
-    
+
     function calculateConsistency(numbers): number {
 
         if (numbers === undefined) {
@@ -170,17 +170,37 @@ const TypingResult = () => {
         } else {
             setIsLoading(false);
         }
-        submitTypingResult();
+        submitTypingResultMiddleware()
     }, []);
+
+    const submitTypingResultMiddleware = async () => {
+        await isUserAuthenticated();
+        await submitTypingResult();
+    }
 
     const submitTypingResult = async () => {
         let res: any;
         try {
             res = await Evaluation.submitTypingResult(typingSpeed, data.typingTime);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const isUserAuthenticated = async () => {
+        try {
+            let res = await Auth.isAuthenicated();
             setIsAuthenticated(true);
         } catch (error) {
-            setIsAuthenticated(false);
-            console.log(error);
+            try {
+                await Auth.getToken();
+                await isUserAuthenticated();
+            } catch (error) {
+                console.log(error);
+                setIsAuthenticated(false);
+            }
+
+            console.error(error);
         }
     }
 
@@ -374,7 +394,7 @@ const TypingResult = () => {
                 </div>
 
             </>)
-        )
+    )
 }
 
 export default TypingResult

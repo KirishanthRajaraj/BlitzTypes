@@ -105,10 +105,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
   }, []);
 
   useEffect(() => {
-    setPreferredLanguage();
-
-    getWords();
-
+    initialization();
   }, [])
 
   useEffect(() => {
@@ -132,12 +129,19 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
     sendAllWordsArr(allWordsInChars);
   }, [allWordsInChars])
 
+  const initialization = async () => {
+    await setPreferredLanguage();
+  }
+
   const setPreferredLanguage = () => {
-        const savedLanguage = localStorage.getItem('preferredLanguage');
-        if (savedLanguage !== null) {
-          setCurrentLanguage(savedLanguage as Language);
-        }
-        localStorage.getItem('preferredLanguage')
+    const savedLanguage = localStorage.getItem('preferredLanguage');
+    if (savedLanguage !== null) {
+      return new Promise<void>((resolve) => {
+        setCurrentLanguage(savedLanguage as Language);
+        resolve();
+      });
+    }
+    localStorage.getItem('preferredLanguage')
   }
 
   const handleAnyKeyPressed = () => {
@@ -406,7 +410,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   const handleRestart = (event) => {
     console.log(event);
-    if (event.key === 'Enter'  || event.type === 'click') {
+    if (event.key === 'Enter' || event.type === 'click') {
       getWords();
       if (textFieldRef.current) {
         textFieldRef.current.value = "";
