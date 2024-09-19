@@ -411,10 +411,13 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
       switch (currentCountdown) {
         case Countdown.Seconds_15:
           cd = 15;
+          break;
         case Countdown.Seconds_30:
           cd = 30;
+          break;
         case Countdown.Seconds_60:
           cd = 60;
+          break;
         default:
           cd = 15;
       }
