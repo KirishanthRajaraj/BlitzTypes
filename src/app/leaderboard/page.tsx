@@ -26,7 +26,6 @@ export default function Login() {
     let res: any;
     try {
       res = await Leaderboard.getAllCandidates();
-      console.log(res.data);
       setCandidates(res.data);
     } catch (error) {
       toast({
@@ -62,8 +61,8 @@ export default function Login() {
                   </div>
 
                   {candidate.title && (
-                    <div
-                      className={`${candidate.titleStyles}`}
+                    <div bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-sm bg-clip-text text-transparent 
+                      className={`text-transparent bg-clip-text bg-gradient-to-r from-amber-800 to-gray-100`}
                     >                    
                     {candidate.title}
                     </div>

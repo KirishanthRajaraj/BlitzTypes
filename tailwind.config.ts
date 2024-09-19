@@ -26,7 +26,10 @@ const config = {
     'text-transparent',
     'from-blue-500', 
     'via-red-500', 
-    'to-yellow-400'
+    'to-yellow-400',
+    'from-amber-800',
+    'to-gray-100',
+    'bg-red-500'
   ],
   prefix: "",
   theme: {

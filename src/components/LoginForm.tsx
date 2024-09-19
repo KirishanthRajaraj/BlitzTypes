@@ -53,8 +53,6 @@ export function LoginForm() {
         try {
             let res = await Auth.isAuthenicated();
             setIsAuthenticated(true);
-            console.log(res);
-
         } catch (error) {
 
             try {

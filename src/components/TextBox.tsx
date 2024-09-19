@@ -126,13 +126,14 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
     await setPreferredLanguage();
   }
 
-  const setPreferredLanguage = () => {
+  const setPreferredLanguage = async () => {
     const savedLanguage = localStorage.getItem('preferredLanguage');
     if (savedLanguage !== null) {
-        setCurrentLanguage(savedLanguage as Language);
-        getWords(savedLanguage as Language);
+      setCurrentLanguage(savedLanguage as Language);
+      setData({language: savedLanguage as Language});
+      console.log("changed data");
+      getWords(savedLanguage as Language);
     }
-    localStorage.getItem('preferredLanguage')
   }
 
   const handleAnyKeyPressed = () => {
@@ -321,9 +322,6 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
             setAllWordsInChars(textboxcharsCopy);
           } else {
-            console.log(inputword.chars[j].char);
-            console.log(textboxchars.chars[j].char);
-
             setIsCorrect(false);
             textboxchars.isCorrect = isCorrect;
             textboxchars.chars[j].isCorrect = false;
@@ -427,6 +425,7 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
 
   const handleLanguageChange = (changedLanguage: Language) => {
     setCurrentLanguage(changedLanguage);
+    setData({language: changedLanguage});
     getWords(changedLanguage);
     localStorage.setItem('preferredLanguage', changedLanguage);
   }

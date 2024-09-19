@@ -23,7 +23,7 @@ import BouncingDotsLoader from './BouncingDotsLoader';
 
 const TypingResult = () => {
     const router = useRouter()
-    const { data, setData } = useAppContext();
+    const { data } = useAppContext();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [segments, setSegments] = useState([]);
     const [consistencyInterval, setConsistencyInterval] = useState<number>(2);
@@ -50,7 +50,6 @@ const TypingResult = () => {
     const calcCorrectTypingPercentage = () => {
         if (data && data.finalWords && data.typingTime) {
             data.finalWords.forEach(word => {
-                console.log(word);
                 let wordIsTyped = false;
                 word.chars.forEach(char => {
                     if (char.isTyped) {
@@ -170,7 +169,7 @@ const TypingResult = () => {
         } else {
             setIsLoading(false);
         }
-        submitTypingResultMiddleware()
+        submitTypingResultMiddleware();
     }, []);
 
     const submitTypingResultMiddleware = async () => {

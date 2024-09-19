@@ -49,7 +49,6 @@ export function RegisterForm() {
                     router.push("/profile");
                 }
                 router.push("/profile");
-                console.log('Registration successful:', response.data);
             } else {
                 setPwIdentical(false);
             }
@@ -64,7 +63,6 @@ export function RegisterForm() {
                 title: "Login failed",
                 description: errors,
               });
-            console.log('Registration failed:', errors);
             setError('Invalid sign up attempt.');
         }
     };

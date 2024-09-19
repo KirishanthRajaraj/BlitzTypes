@@ -4,7 +4,6 @@ import { Language } from "@/enums/language";
 
 axios.defaults.withCredentials = true;
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-console.log(API_URL);
 export const login = (username, password, rememberMe) => {
         return axios.post(`${API_URL}/Authentication/login`, {
         Username: username,
