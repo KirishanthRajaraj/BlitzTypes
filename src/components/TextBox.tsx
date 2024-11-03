@@ -16,6 +16,7 @@ import { faArrowPointer, faHandPointer, faRotateRight } from '@fortawesome/free-
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Separator } from './ui/separator';
 import { Countdown } from '@/enums/countdown';
+import { Languages } from 'lucide-react';
 
 
 interface Props {
@@ -134,6 +135,8 @@ const TextBox: React.FC<Props> = ({ InputWords, language, textFieldRef, allWords
       setData({language: savedLanguage as Language});
       console.log("changed data");
       getWords(savedLanguage as Language);
+    } else {
+      getWords(Language.English);
     }
   }
 
